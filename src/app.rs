@@ -13,8 +13,8 @@ impl Default for TemplateApp {
     fn default() -> Self {
         Self {
             // Example stuff:
-            label: "Adarsh".to_owned(),
-            value: 2.7,
+            label: "Adarsh Das".to_owned(),
+            value: 0.0,
         }
     }
 }
@@ -59,6 +59,12 @@ impl eframe::App for TemplateApp {
                     });
                     ui.add_space(16.0);
                 }
+                ui.menu_button("File", |ui| {
+                    if ui.button("Quit").clicked() {
+                        // TODO
+                    }
+                });
+                ui.add_space(16.0);
 
                 egui::widgets::global_dark_light_mode_buttons(ui);
             });
@@ -69,13 +75,13 @@ impl eframe::App for TemplateApp {
             ui.heading("eframe template");
 
             ui.horizontal(|ui| {
-                ui.label("Write something: ");
+                ui.label("Go on write something");
                 ui.text_edit_singleline(&mut self.label);
             });
 
             ui.add(egui::Slider::new(&mut self.value, 0.0..=10.0).text("value"));
-            if ui.button("Increment").clicked() {
-                self.value += 1.0;
+            if ui.button("Increase number").clicked() {
+                self.value += 0.1_f32;
             }
 
             ui.separator();
