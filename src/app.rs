@@ -13,7 +13,7 @@ impl Default for TemplateApp {
     fn default() -> Self {
         Self {
             // Example stuff:
-            label: "Hello World!".to_owned(),
+            label: "Adarsh".to_owned(),
             value: 2.7,
         }
     }
