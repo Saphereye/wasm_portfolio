@@ -2,7 +2,7 @@
 name = "adarsh_website"
 version = "0.1.0"
 authors = ["Adarsh Das <adarshdas950@gmail.com>"]
-edition = "2023"
+edition = "2021"
 rust-version = "1.71"
 
 
