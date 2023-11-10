@@ -1,5 +1,6 @@
 use egui::*;
-use std::f64::consts::TAU;
+use reqwest;
+use std::{f64::consts::TAU, fmt::format};
 
 use egui_plot::{CoordinatesFormatter, Corner, Legend, Line, Plot, PlotPoints};
 
@@ -9,6 +10,7 @@ enum Window {
     Resume,
     Projects,
     GraphingCalculator,
+    Cats,
 }
 
 #[derive(serde::Deserialize, serde::Serialize)]
@@ -139,6 +141,8 @@ pub struct Website {
     current_window: Window,
 
     graphing_calculator_app: GraphingCalculatorApp,
+
+    main_menu_size: f32,
 }
 
 impl Default for Website {
@@ -148,6 +152,7 @@ impl Default for Website {
             value: 0.0,
             current_window: Window::About,
             graphing_calculator_app: GraphingCalculatorApp::default(),
+            main_menu_size: 17.0,
         }
     }
 }
@@ -182,25 +187,57 @@ impl eframe::App for Website {
         egui::TopBottomPanel::top("top_panel").show(ctx, |ui| {
             // The top panel is often a good place for a menu bar:
             egui::menu::bar(ui, |ui| {
+                // ctx.set_pixels_per_point(2.0);
                 egui::widgets::global_dark_light_mode_switch(ui);
 
                 ui.separator();
-                ui.selectable_value(&mut self.current_window, Window::About, "👨 About");
-                ui.selectable_value(&mut self.current_window, Window::Resume, "📄 Resume");
-                ui.selectable_value(&mut self.current_window, Window::Projects, "🚀 Projects");
+                ui.selectable_value(
+                    &mut self.current_window,
+                    Window::About,
+                    RichText::new("👨 About Me").size(self.main_menu_size),
+                );
+                // ui.selectable_value(&mut self.current_window, Window::Resume, "📄 Resume");
+                // ui.selectable_value(&mut self.current_window, Window::Projects, "🚀 Projects");
                 ui.selectable_value(
                     &mut self.current_window,
                     Window::GraphingCalculator,
-                    "📈 Graphing Calculator",
+                    RichText::new("📈 Graphing Calculator").size(self.main_menu_size),
                 );
-                ui.add_space(16.0);
+
+                // ui.selectable_value(
+                //     &mut self.current_window,
+                //     Window::Cats,
+                //     RichText::new("🐱 Cats").size(self.main_menu_size),
+                // );
+
+                ui.with_layout(egui::Layout::right_to_left(egui::Align::TOP), |ui| {
+                    ui.hyperlink_to(
+                        RichText::new("📄 Resume").size(self.main_menu_size),
+                        "http://google.com",
+                    );
+                });
             });
+            // ui.add_space(20.0);
         });
 
         egui::CentralPanel::default().show(ctx, |ui| {
             match self.current_window {
                 Window::About => {
-                    ui.heading("About Me");
+                    egui::CentralPanel::default().show(ctx, |ui| {
+                        ui.heading(RichText::new("About Me").size(40.0));
+                        ui.label(
+                            RichText::new(
+                                "A passionate developer interested in all things computers",
+                            )
+                            .italics()
+                            .size(20.0),
+                        );
+                        ui.add_space(10.0);
+                        ui.label(
+                            RichText::new("I am Adarsh Das, currently studying at BITS, Hyd")
+                                .size(20.0),
+                        )
+                    });
                 }
                 Window::Resume => {
                     // The central panel the region left after adding TopPanel's and SidePanel's
@@ -254,6 +291,8 @@ impl eframe::App for Website {
                         ui.ctx().request_repaint();
                         // ui.heading(self.graphing_calculator_app.equations[1].clone());
                     });
+                }
+                Window::Cats => {
                 }
             }
         });
