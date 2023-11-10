@@ -1,12 +1,7 @@
-use std::{f64::consts::TAU, fmt::format};
 use egui::*;
+use std::f64::consts::TAU;
 
-
-use egui_plot::{
-    Arrows, AxisBools, AxisHints, Bar, BarChart, BoxElem, BoxPlot, BoxSpread, CoordinatesFormatter,
-    Corner, GridInput, GridMark, HLine, Legend, Line, LineStyle, MarkerShape, Plot, PlotImage,
-    PlotPoint, PlotPoints, PlotResponse, Points, Polygon, Text, VLine,
-};
+use egui_plot::{CoordinatesFormatter, Corner, Legend, Line, Plot, PlotPoints};
 
 #[derive(serde::Deserialize, serde::Serialize, PartialEq)]
 enum Window {
@@ -124,9 +119,11 @@ impl GraphingCalculatorApp {
         .response
     }
 
+    /*
     fn parse_equation(&self) {
         todo!();
     }
+    */
 }
 
 /// We derive Deserialize/Serialize so we can persist app state on shutdown.
@@ -252,7 +249,7 @@ impl eframe::App for Website {
                             for equation in self.graphing_calculator_app.equations.iter_mut() {
                                 ui.text_edit_singleline(equation);
                             }
-                         });
+                        });
                         ui.heading(format!("{:?}", self.graphing_calculator_app.equations));
                         ui.ctx().request_repaint();
                         // ui.heading(self.graphing_calculator_app.equations[1].clone());
