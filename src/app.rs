@@ -214,10 +214,11 @@ impl eframe::App for Website {
                     ui.heading("Expense Calculator");
 
                     if ui.text_edit_multiline(&mut self.expense_calculator_app.input).changed() {
-                        let _ = self.expense_calculator_app.parse_data_from_input();
+                        let _ = self.expense_calculator_app.find_contributions();
                     }
 
                     ui.heading(format!("{:?}", self.expense_calculator_app.contributions));
+                    ui.heading(self.expense_calculator_app.output.clone());
                 }
             }
         });
