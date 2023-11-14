@@ -1,131 +1,23 @@
-use egui::*;
-use reqwest;
-use std::{f64::consts::TAU, fmt::format};
+use std::fmt::format;
 
-use egui_plot::{CoordinatesFormatter, Corner, Legend, Line, Plot, PlotPoints};
+use egui::*;
+
+mod graphing_calculator;
+mod projects;
+mod expense_calculator;
+
+use graphing_calculator::*;
+use projects::*;
+use expense_calculator::*;
 
 #[derive(serde::Deserialize, serde::Serialize, PartialEq)]
 enum Window {
     About,
-    Resume,
     Projects,
     GraphingCalculator,
-    Cats,
-}
-
-#[derive(serde::Deserialize, serde::Serialize)]
-struct GraphingCalculatorApp {
-    circle_radius: f64,
-    circle_center: Pos2,
-    time: f64,
-    // line_style: LineStyle,
-    animate: bool,
-    show_axes: bool,
-    show_grid: bool,
-
-    square: bool,
-    proportional: bool,
-
-    coordinates: bool,
-
-    equations: Vec<String>,
-}
-
-impl Default for GraphingCalculatorApp {
-    fn default() -> Self {
-        GraphingCalculatorApp {
-            circle_center: Pos2 { x: 0.0, y: 0.0 },
-            circle_radius: 1.5,
-            time: 31.4,
-            // line_style: LineStyle::Solid,
-            animate: false,
-            show_axes: true,
-            show_grid: true,
-            square: false,
-            proportional: true,
-            coordinates: true,
-            equations: vec!["sin(x)".to_string(), "cos(x)".to_string()],
-        }
-        // Self { circle_radius: Default::default(), circle_center: Default::default(), time: Default::default(), line_style: Default::default(), animate: Default::default(), show_axes: Default::default(), show_grid: Default::default(), square: Default::default(), proportional: Default::default(), coordinates: Default::default(), equations: Default::default() }
-    }
-}
-
-impl GraphingCalculatorApp {
-    fn circle(&self) -> Line {
-        let n = 512;
-        let circle_points: PlotPoints = (0..=n)
-            .map(|i| {
-                let t = remap(i as f64, 0.0..=(n as f64), 0.0..=TAU);
-                let r = self.circle_radius;
-                [
-                    r * t.cos() + self.circle_center.x as f64,
-                    r * t.sin() + self.circle_center.y as f64,
-                ]
-            })
-            .collect();
-        Line::new(circle_points)
-            .color(Color32::from_rgb(100, 200, 100))
-            // .style(self.line_style)
-            .name("circle")
-    }
-
-    fn sin(&self) -> Line {
-        let time = self.time;
-        Line::new(PlotPoints::from_explicit_callback(
-            move |x| 0.5 * (2.0 * x).sin() * time.sin(),
-            ..,
-            512,
-        ))
-        .color(Color32::from_rgb(200, 100, 100))
-        // .style(self.line_style)
-        .name("sin")
-    }
-
-    fn thingy(&self) -> Line {
-        let time = self.time;
-        Line::new(PlotPoints::from_parametric_callback(
-            move |t| ((2.0 * t + time).sin(), (3.0 * t).sin()),
-            0.0..=TAU,
-            256,
-        ))
-        .color(Color32::from_rgb(100, 150, 250))
-        // .style(self.line_style)
-        .name("x = sin(2t), y = sin(3t)")
-    }
-
-    fn ui(&mut self, ui: &mut Ui) -> Response {
-        if self.animate {
-            ui.ctx().request_repaint();
-            self.time += ui.input(|i| i.unstable_dt).at_most(1.0 / 30.0) as f64;
-            // self.time += 0.1;
-        };
-        let mut plot = Plot::new("lines_demo")
-            .legend(Legend::default())
-            .y_axis_width(4)
-            .show_axes(self.show_axes)
-            .show_grid(self.show_grid);
-        if self.square {
-            plot = plot.view_aspect(1.0);
-        }
-        if self.proportional {
-            plot = plot.data_aspect(1.0);
-        }
-        if self.coordinates {
-            plot = plot.coordinates_formatter(Corner::LeftBottom, CoordinatesFormatter::default());
-        }
-        plot.show(ui, |plot_ui| {
-            plot_ui.line(self.circle());
-            plot_ui.line(self.sin());
-            plot_ui.line(self.thingy());
-        })
-        .response
-    }
-
-    /*
-    fn parse_equation(&self) {
-        todo!();
-    }
-    */
+    NoteMaker,
+    ExpenseCalculator,
+    Resume,
 }
 
 /// We derive Deserialize/Serialize so we can persist app state on shutdown.
@@ -143,6 +35,8 @@ pub struct Website {
     graphing_calculator_app: GraphingCalculatorApp,
 
     main_menu_size: f32,
+
+    expense_calculator_app: ExpenseCalcApp,
 }
 
 impl Default for Website {
@@ -153,6 +47,7 @@ impl Default for Website {
             current_window: Window::About,
             graphing_calculator_app: GraphingCalculatorApp::default(),
             main_menu_size: 17.0,
+            expense_calculator_app: ExpenseCalcApp::default(),
         }
     }
 }
@@ -191,31 +86,43 @@ impl eframe::App for Website {
                 egui::widgets::global_dark_light_mode_switch(ui);
 
                 ui.separator();
-                ui.selectable_value(
-                    &mut self.current_window,
-                    Window::About,
-                    RichText::new("👨 About Me").size(self.main_menu_size),
-                );
-                // ui.selectable_value(&mut self.current_window, Window::Resume, "📄 Resume");
-                // ui.selectable_value(&mut self.current_window, Window::Projects, "🚀 Projects");
-                ui.selectable_value(
-                    &mut self.current_window,
-                    Window::GraphingCalculator,
-                    RichText::new("📈 Graphing Calculator").size(self.main_menu_size),
-                );
+                egui::ScrollArea::horizontal().show(ui, |ui| {
+                    ui.selectable_value(
+                        &mut self.current_window,
+                        Window::About,
+                        RichText::new("👨 About Me").size(self.main_menu_size),
+                    );
+    
+                    ui.selectable_value(
+                        &mut self.current_window,
+                        Window::Projects,
+                        RichText::new("🎮 Projects").size(self.main_menu_size),
+                    );
+    
+                    ui.selectable_value(
+                        &mut self.current_window,
+                        Window::GraphingCalculator,
+                        RichText::new("📈 Graphing Calculator").size(self.main_menu_size),
+                    );
+    
+                    ui.selectable_value(
+                        &mut self.current_window,
+                        Window::NoteMaker,
+                        RichText::new("📝 Notemaker ").size(self.main_menu_size),
+                    );
+    
+                    ui.selectable_value(
+                        &mut self.current_window,
+                        Window::ExpenseCalculator,
+                        RichText::new("💸 Expense Calculator ").size(self.main_menu_size),
+                    );
 
-                // ui.selectable_value(
-                //     &mut self.current_window,
-                //     Window::Cats,
-                //     RichText::new("🐱 Cats").size(self.main_menu_size),
-                // );
-
-                ui.with_layout(egui::Layout::right_to_left(egui::Align::TOP), |ui| {
                     ui.hyperlink_to(
                         RichText::new("📄 Resume").size(self.main_menu_size),
-                        "http://google.com",
+                        "https://github.com/Saphereye/resume-and-details/files/12909438/Adarsh_resume.1._compressed.pdf",
                     );
                 });
+                    
             });
             // ui.add_space(20.0);
         });
@@ -238,6 +145,20 @@ impl eframe::App for Website {
                                 .size(20.0),
                         )
                     });
+                }
+                Window::Projects => {
+                    let mut project_app = ProjectsApp::default();
+                    project_app.add_project(Project {
+                        name: "Dicey Fate 2.0".to_string(),
+                        image: "skdjfh".to_string(),
+                        description: "skdjfhsjkdfh".to_string(),
+                        year: 2021,
+                    });
+                    ui.heading("Projects");
+                    ui.label(format!("{:?}", project_app.projects));
+                }
+                Window::NoteMaker => {
+                    ui.heading("NoteMaker");
                 }
                 Window::Resume => {
                     // The central panel the region left after adding TopPanel's and SidePanel's
@@ -265,12 +186,9 @@ impl eframe::App for Website {
                         egui::warn_if_debug_build(ui);
                     });
                 }
-                Window::Projects => {
-                    ui.heading("Projects");
-                }
                 Window::GraphingCalculator => {
                     egui::SidePanel::right("graph_panel")
-                        .default_width(50.0)
+                        .width_range(Rangef { min: 500.0, max: 800.0  })
                         .show(ctx, |ui| {
                             self.graphing_calculator_app.ui(ui);
                         });
@@ -292,7 +210,14 @@ impl eframe::App for Website {
                         // ui.heading(self.graphing_calculator_app.equations[1].clone());
                     });
                 }
-                Window::Cats => {
+                Window::ExpenseCalculator => {
+                    ui.heading("Expense Calculator");
+
+                    if ui.text_edit_multiline(&mut self.expense_calculator_app.input).changed() {
+                        let _ = self.expense_calculator_app.parse_data_from_input();
+                    }
+
+                    ui.heading(format!("{:?}", self.expense_calculator_app.contributions));
                 }
             }
         });
