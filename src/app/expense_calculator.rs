@@ -2,7 +2,7 @@ use std::clone;
 use std::collections::HashSet;
 use std::error::Error;
 use std::hash::{Hash, Hasher};
-use std::ops::{IndexMut, AddAssign};
+use std::ops::{AddAssign, IndexMut};
 
 #[derive(Debug, serde::Deserialize, serde::Serialize, Clone)]
 pub struct Contribution {
@@ -30,21 +30,12 @@ impl Contribution {
     }
 }
 
-#[derive(Debug, serde::Deserialize, serde::Serialize)]
+#[derive(Debug, serde::Deserialize, serde::Serialize, Default)]
 pub struct ExpenseCalcApp {
     pub input: String,
     pub contributions: Vec<Contribution>,
     pub output: String,
-}
-
-impl Default for ExpenseCalcApp {
-    fn default() -> Self {
-        ExpenseCalcApp {
-            input: String::new(),
-            contributions: vec![],
-            output: String::new(),
-        }
-    }
+    pub transaction_history: Vec<(String, String, f32)>,
 }
 
 impl ExpenseCalcApp {
@@ -118,14 +109,16 @@ impl ExpenseCalcApp {
         )
         .as_str();
 
+        self.transaction_history = vec![];
+
         // Case where only one person has payed surplus
         if people_who_have_payed_surplus.len() == 1 {
             for entry in &people_who_have_to_pay {
-                self.output += format!(
-                    "{} pays {}, {} Amount\n",
-                    entry.name, people_who_have_payed_surplus[0].name, -entry.contribution
-                )
-                .as_str();
+                self.transaction_history.push((
+                    entry.name.clone(),
+                    people_who_have_payed_surplus[0].name.clone(),
+                    -entry.contribution,
+                ));
             }
             return;
         } else {
@@ -144,11 +137,11 @@ impl ExpenseCalcApp {
                         && !debt_set.contains(entry2)
                     {
                         // Found a match, mark the indices to remove
-                        self.output += format!(
-                            "{} pays {}, {} Amount\n",
-                            entry2.name, entry1.name, entry1.contribution
-                        )
-                        .as_str();
+                        self.transaction_history.push((
+                            entry2.name.clone(),
+                            entry1.name.clone(),
+                            entry1.contribution,
+                        ));
                         surplus_set.insert(entry1.clone());
                         debt_set.insert(entry2.clone());
                         index_to_remove.push((i, j));
@@ -190,23 +183,26 @@ impl ExpenseCalcApp {
                 && debt_index < people_who_have_to_pay_filtered.len()
             {
                 let surplus_candidate = &mut people_who_have_payed_surplus_filtered[surplus_index];
-                if let Some(debt_candidate) = people_who_have_to_pay_filtered.get_mut(debt_index) {
-
-                    if surplus_candidate.contribution < -debt_candidate.contribution {
-                        self.output += format!(
-                            "{} pays {}, {} Amount\n",
-                            debt_candidate.name, surplus_candidate.name, surplus_candidate.contribution
-                        )
-                        .as_str();
-                        surplus_index += 1;
-
-                        debt_candidate.contribution += surplus_candidate.contribution;
-                    } else {
-                        todo!();
-                    }
+                let debt_candidate = &mut people_who_have_to_pay_filtered[debt_index];
+                if surplus_candidate.contribution < -debt_candidate.contribution {
+                    self.transaction_history.push((
+                        debt_candidate.name.clone(),
+                        surplus_candidate.name.clone(),
+                        surplus_candidate.contribution,
+                    ));
+                    surplus_index += 1;
+                    debt_candidate.contribution += surplus_candidate.contribution;
+                } else {
+                    self.transaction_history.push((
+                        debt_candidate.name.clone(),
+                        surplus_candidate.name.clone(),
+                        -debt_candidate.contribution,
+                    ));
+                    debt_index += 1;
+                    surplus_candidate.contribution += debt_candidate.contribution;
                 }
-
             }
         }
+        self.output += format!("{:?}\n", self.transaction_history).as_str();
     }
 }

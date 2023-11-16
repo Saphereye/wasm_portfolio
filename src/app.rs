@@ -1,14 +1,15 @@
 use std::fmt::format;
 
 use egui::*;
+use egui_extras::{Column, TableBuilder};
 
+mod expense_calculator;
 mod graphing_calculator;
 mod projects;
-mod expense_calculator;
 
+use expense_calculator::*;
 use graphing_calculator::*;
 use projects::*;
-use expense_calculator::*;
 
 #[derive(serde::Deserialize, serde::Serialize, PartialEq)]
 enum Window {
@@ -188,7 +189,10 @@ impl eframe::App for Website {
                 }
                 Window::GraphingCalculator => {
                     egui::SidePanel::right("graph_panel")
-                        .width_range(Rangef { min: 500.0, max: 800.0  })
+                        .width_range(Rangef {
+                            min: 500.0,
+                            max: 800.0,
+                        })
                         .show(ctx, |ui| {
                             self.graphing_calculator_app.ui(ui);
                         });
@@ -213,12 +217,48 @@ impl eframe::App for Website {
                 Window::ExpenseCalculator => {
                     ui.heading("Expense Calculator");
 
-                    if ui.text_edit_multiline(&mut self.expense_calculator_app.input).changed() {
+                    if ui
+                        .text_edit_multiline(&mut self.expense_calculator_app.input)
+                        .changed()
+                    {
                         let _ = self.expense_calculator_app.find_contributions();
                     }
 
-                    ui.heading(format!("{:?}", self.expense_calculator_app.contributions));
-                    ui.heading(self.expense_calculator_app.output.clone());
+                    // ui.heading(format!("{:?}", self.expense_calculator_app.contributions));
+                    // ui.heading(self.expense_calculator_app.output.clone());
+
+                    TableBuilder::new(ui)
+                    .striped(true)
+                    .column(Column::auto().resizable(true))
+                    .column(Column::auto().resizable(true))
+                    .column(Column::auto().resizable(true))
+                        .column(Column::remainder())
+                        .header(20.0, |mut header| {
+                            header.col(|ui| {
+                                ui.heading("Payer");
+                            });
+                            header.col(|ui| {
+                                ui.heading("Receiver");
+                            });
+                            header.col(|ui| {
+                                ui.heading("Amount (₹)");
+                            });
+                        })
+                        .body(|mut body| {
+                            for (payer, receiver, amount) in self.expense_calculator_app.transaction_history.clone() {
+                                body.row(30.0, |mut row| {
+                                    row.col(|ui| {
+                                        ui.label(payer);
+                                    });
+                                    row.col(|ui| {
+                                        ui.label(receiver);
+                                    });
+                                    row.col(|ui| {
+                                        ui.label(amount.to_string());
+                                    });
+                                });
+                            }
+                        });
                 }
             }
         });
