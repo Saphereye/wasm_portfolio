@@ -1,15 +1,30 @@
-use std::fmt::format;
+use std::{default, fmt::format, task::Poll};
 
 use egui::*;
 use egui_extras::{Column, TableBuilder};
 
 mod expense_calculator;
 mod graphing_calculator;
+mod http_app;
 mod projects;
 
 use expense_calculator::*;
 use graphing_calculator::*;
+use http_app::*;
+use lazy_static::lazy_static;
+use poll_promise::Promise;
 use projects::*;
+
+lazy_static! {
+    static ref PROJECTS: Vec<Project> = vec![
+        Project {
+            name: "Brainfuck Interpreter".to_string(),
+            image: Some("https://picsum.photos/480".to_string()),
+            description: "Implemented a brainfuck interpreter in Rust🚀 with the brain of the code in about 150 loc. Supports intuitive command line support. A toy project finished in two hours.".to_string(),
+            year: 2023,
+        },
+    ];
+}
 
 #[derive(serde::Deserialize, serde::Serialize, PartialEq)]
 enum Window {
@@ -19,6 +34,7 @@ enum Window {
     NoteMaker,
     ExpenseCalculator,
     Resume,
+    // Http,
 }
 
 /// We derive Deserialize/Serialize so we can persist app state on shutdown.
@@ -37,7 +53,9 @@ pub struct Website {
 
     main_menu_size: f32,
 
-    expense_calculator_app: ExpenseCalcApp,
+    expense_calculator_app: ExpenseCalculatorApp,
+    // #[serde(skip)]
+    // http_app: HttpApp,
 }
 
 impl Default for Website {
@@ -46,9 +64,10 @@ impl Default for Website {
             label: "Adarsh Das".to_owned(),
             value: 0.0,
             current_window: Window::About,
-            graphing_calculator_app: GraphingCalculatorApp::default(),
             main_menu_size: 17.0,
-            expense_calculator_app: ExpenseCalcApp::default(),
+            graphing_calculator_app: GraphingCalculatorApp::default(),
+            expense_calculator_app: ExpenseCalculatorApp::default(),
+            // http_app: HttpApp::default(),
         }
     }
 }
@@ -93,37 +112,37 @@ impl eframe::App for Website {
                         Window::About,
                         RichText::new("👨 About Me").size(self.main_menu_size),
                     );
-    
                     ui.selectable_value(
                         &mut self.current_window,
                         Window::Projects,
                         RichText::new("🎮 Projects").size(self.main_menu_size),
                     );
-    
                     ui.selectable_value(
                         &mut self.current_window,
                         Window::GraphingCalculator,
                         RichText::new("📈 Graphing Calculator").size(self.main_menu_size),
                     );
-    
                     ui.selectable_value(
                         &mut self.current_window,
                         Window::NoteMaker,
                         RichText::new("📝 Notemaker ").size(self.main_menu_size),
                     );
-    
                     ui.selectable_value(
                         &mut self.current_window,
                         Window::ExpenseCalculator,
                         RichText::new("💸 Expense Calculator ").size(self.main_menu_size),
                     );
-
-                    ui.hyperlink_to(
-                        RichText::new("📄 Resume").size(self.main_menu_size),
-                        "https://github.com/Saphereye/resume-and-details/files/12909438/Adarsh_resume.1._compressed.pdf",
-                    );
-                });
+                    // ui.selectable_value(
+                    //     &mut self.current_window,
+                    //     Window::Http,
+                    //     RichText::new("💸 Http App ").size(self.main_menu_size),
+                    // );
                     
+                    // ui.hyperlink_to(
+                    //     RichText::new("📄 Resume").size(self.main_menu_size),
+                    //     "https://github.com/Saphereye/resume-and-details/files/12909438/Adarsh_resume.1._compressed.pdf",
+                    // );
+                });
             });
             // ui.add_space(20.0);
         });
@@ -148,15 +167,32 @@ impl eframe::App for Website {
                     });
                 }
                 Window::Projects => {
-                    let mut project_app = ProjectsApp::default();
-                    project_app.add_project(Project {
-                        name: "Dicey Fate 2.0".to_string(),
-                        image: "skdjfh".to_string(),
-                        description: "skdjfhsjkdfh".to_string(),
-                        year: 2021,
-                    });
                     ui.heading("Projects");
-                    ui.label(format!("{:?}", project_app.projects));
+                    egui_extras::install_image_loaders(ctx);
+
+                    egui::ScrollArea::vertical().show(ui, |ui| {
+                        for project in PROJECTS.iter() {
+                            ui.horizontal(|ui| {
+                                ui.add_space(10.0);
+                                ui.vertical(|ui| {
+                                    ui.add_space(10.0);
+                                    ui.heading(project.name.clone());
+                                    ui.add_space(10.0);
+                                    ui.label(project.description.clone());
+                                    ui.add_space(10.0);
+                                    ui.heading(format!("Image: {:?}", project.image));
+                                    match project.image.clone() {
+                                        // Some(url) => {ui.image(url);},
+                                        Some(url) => {ui.image(include_image!("../assets/brainfuck_logo.png"));}
+                                        None => ()
+                                    }
+                                    ui.add_space(10.0);
+                                    ui.label(format!("Year: {}", project.year));
+                                    ui.add_space(10.0);
+                                });
+                            });
+                        }
+                    });
                 }
                 Window::NoteMaker => {
                     ui.heading("NoteMaker");
@@ -228,10 +264,10 @@ impl eframe::App for Website {
                     // ui.heading(self.expense_calculator_app.output.clone());
 
                     TableBuilder::new(ui)
-                    .striped(true)
-                    .column(Column::auto().resizable(true))
-                    .column(Column::auto().resizable(true))
-                    .column(Column::auto().resizable(true))
+                        .striped(true)
+                        .column(Column::auto().resizable(true))
+                        .column(Column::auto().resizable(true))
+                        .column(Column::auto().resizable(true))
                         .column(Column::remainder())
                         .header(20.0, |mut header| {
                             header.col(|ui| {
@@ -245,7 +281,9 @@ impl eframe::App for Website {
                             });
                         })
                         .body(|mut body| {
-                            for (payer, receiver, amount) in self.expense_calculator_app.transaction_history.clone() {
+                            for (payer, receiver, amount) in
+                                self.expense_calculator_app.transaction_history.clone()
+                            {
                                 body.row(30.0, |mut row| {
                                     row.col(|ui| {
                                         ui.label(payer);
@@ -259,7 +297,13 @@ impl eframe::App for Website {
                                 });
                             }
                         });
-                }
+                } // Window::Http => {
+                  //     ui.heading("Http App");
+
+                  //     if ui.button("Press me").clicked() {
+                  //         self.http_app.fetch_data(ui);
+                  //     }
+                  // }
             }
         });
     }

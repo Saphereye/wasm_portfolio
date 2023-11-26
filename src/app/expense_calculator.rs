@@ -31,14 +31,14 @@ impl Contribution {
 }
 
 #[derive(Debug, serde::Deserialize, serde::Serialize, Default)]
-pub struct ExpenseCalcApp {
+pub struct ExpenseCalculatorApp {
     pub input: String,
     pub contributions: Vec<Contribution>,
     pub output: String,
     pub transaction_history: Vec<(String, String, f32)>,
 }
 
-impl ExpenseCalcApp {
+impl ExpenseCalculatorApp {
     pub fn find_contributions(&mut self) {
         self.output = String::new();
 
