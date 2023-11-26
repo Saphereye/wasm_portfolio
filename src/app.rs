@@ -23,6 +23,12 @@ lazy_static! {
             description: "Implemented a brainfuck interpreter in Rust🚀 with the brain of the code in about 150 loc. Supports intuitive command line support. A toy project finished in two hours.".to_string(),
             year: 2023,
         },
+        Project {
+            name: "NES Emulator".to_string(),
+            image: Some("https://picsum.photos/480".to_string()),
+            description: "Implemented a an NES wmulator in rust".to_string(),
+            year: 2023,
+        },
     ];
 }
 
@@ -182,13 +188,14 @@ impl eframe::App for Website {
                                     ui.add_space(10.0);
                                     ui.heading(format!("Image: {:?}", project.image));
                                     match project.image.clone() {
-                                        // Some(url) => {ui.image(url);},
-                                        Some(url) => {ui.image(include_image!("../assets/brainfuck_logo.png"));}
+                                        Some(url) => {ui.image(url);},
+                                        // Some(url) => {ui.image(include_image!("../assets/brainfuck_logo.png"));}
                                         None => ()
                                     }
                                     ui.add_space(10.0);
                                     ui.label(format!("Year: {}", project.year));
                                     ui.add_space(10.0);
+                                    ui.separator();
                                 });
                             });
                         }
