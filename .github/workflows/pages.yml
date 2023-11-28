@@ -38,7 +38,7 @@ jobs:
 
         # Adarsh Here: I am hosting it on saphereye.github.io, so adding repo name will not work.
         # run: ./trunk build --release --public-url "${GITHUB_REPOSITORY#*/}"
-        run: ./trunk build --release --public-url "/"
+        run: ./trunk build --release
       - name: Deploy
         uses: JamesIves/github-pages-deploy-action@v4
         with:
