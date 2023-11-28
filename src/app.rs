@@ -143,7 +143,7 @@ impl eframe::App for Website {
                     //     Window::Http,
                     //     RichText::new("💸 Http App ").size(self.main_menu_size),
                     // );
-                    
+
                     // ui.hyperlink_to(
                     //     RichText::new("📄 Resume").size(self.main_menu_size),
                     //     "https://github.com/Saphereye/resume-and-details/files/12909438/Adarsh_resume.1._compressed.pdf",
@@ -264,7 +264,7 @@ impl eframe::App for Website {
                         .text_edit_multiline(&mut self.expense_calculator_app.input)
                         .changed()
                     {
-                        let _ = self.expense_calculator_app.find_contributions();
+                        self.expense_calculator_app.find_contributions();
                     }
 
                     // ui.heading(format!("{:?}", self.expense_calculator_app.contributions));
