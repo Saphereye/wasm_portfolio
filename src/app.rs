@@ -123,16 +123,16 @@ impl eframe::App for Website {
                         Window::Projects,
                         RichText::new("🎮 Projects").size(self.main_menu_size),
                     );
-                    ui.selectable_value(
-                        &mut self.current_window,
-                        Window::GraphingCalculator,
-                        RichText::new("📈 Graphing Calculator").size(self.main_menu_size),
-                    );
-                    ui.selectable_value(
-                        &mut self.current_window,
-                        Window::NoteMaker,
-                        RichText::new("📝 Notemaker ").size(self.main_menu_size),
-                    );
+                    // ui.selectable_value(
+                    //     &mut self.current_window,
+                    //     Window::GraphingCalculator,
+                    //     RichText::new("📈 Graphing Calculator").size(self.main_menu_size),
+                    // );
+                    // ui.selectable_value(
+                    //     &mut self.current_window,
+                    //     Window::NoteMaker,
+                    //     RichText::new("📝 Notemaker ").size(self.main_menu_size),
+                    // );
                     ui.selectable_value(
                         &mut self.current_window,
                         Window::ExpenseCalculator,
@@ -187,11 +187,11 @@ impl eframe::App for Website {
                                     ui.label(project.description.clone());
                                     ui.add_space(10.0);
                                     ui.heading(format!("Image: {:?}", project.image));
-                                    match project.image.clone() {
-                                        Some(url) => {ui.image(url);},
-                                        // Some(url) => {ui.image(include_image!("../assets/brainfuck_logo.png"));}
-                                        None => ()
-                                    }
+                                    // match project.image.clone() {
+                                    //     Some(url) => {ui.image(url);},
+                                    //     // Some(url) => {ui.image(include_image!("../assets/brainfuck_logo.png"));}
+                                    //     None => ()
+                                    // }
                                     ui.add_space(10.0);
                                     ui.label(format!("Year: {}", project.year));
                                     ui.add_space(10.0);
