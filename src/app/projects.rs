@@ -1,13 +1,13 @@
 #[derive(Debug)]
-pub struct Project {
+pub struct Project<'a> {
     pub name: String,
-    pub image: Option<String>,
+    pub image: Option<egui::Image<'a>>,
     pub description: String,
     pub year: u32,
 }
 
-impl Project {
-    pub fn new(name: String, image: Option<String>, description: String, year: u32) -> Self {
+impl<'a> Project<'a> {
+    pub fn new(name: String, image: Option<egui::Image<'a>>, description: String, year: u32) -> Self {
         Project {
             name,
             image,

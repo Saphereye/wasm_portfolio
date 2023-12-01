@@ -15,23 +15,6 @@ use lazy_static::lazy_static;
 use poll_promise::Promise;
 use projects::*;
 
-lazy_static! {
-    static ref PROJECTS: Vec<Project> = vec![
-        Project {
-            name: "Brainfuck Interpreter".to_string(),
-            image: Some("https://picsum.photos/480".to_string()),
-            description: "Implemented a brainfuck interpreter in Rust🚀 with the brain of the code in about 150 loc. Supports intuitive command line support. A toy project finished in two hours.".to_string(),
-            year: 2023,
-        },
-        Project {
-            name: "NES Emulator".to_string(),
-            image: Some("https://picsum.photos/480".to_string()),
-            description: "Implemented a an NES wmulator in rust".to_string(),
-            year: 2023,
-        },
-    ];
-}
-
 #[derive(serde::Deserialize, serde::Serialize, PartialEq)]
 enum Window {
     About,
@@ -102,6 +85,7 @@ impl eframe::App for Website {
 
     /// Called each time the UI needs repainting, which may be many times per second.
     fn update(&mut self, ctx: &egui::Context, _frame: &mut eframe::Frame) {
+        egui_extras::install_image_loaders(ctx);
         // Put your widgets into a `SidePanel`, `TopPanel`, `CentralPanel`, `Window` or `Area`.
         // For inspiration and more examples, go to https://emilk.github.io/egui
 
@@ -169,36 +153,45 @@ impl eframe::App for Website {
                         ui.label(
                             RichText::new("I am Adarsh Das, currently studying at BITS, Hyd")
                                 .size(20.0),
-                        )
+                        );    
                     });
                 }
                 Window::Projects => {
                     ui.heading("Projects");
-                    egui_extras::install_image_loaders(ctx);
 
                     egui::ScrollArea::vertical().show(ui, |ui| {
-                        for project in PROJECTS.iter() {
-                            ui.horizontal(|ui| {
+                        ui.horizontal(|ui| {
+                            ui.add_space(10.0);
+                            ui.vertical(|ui| {
+                                // Brainfuck interpreter
                                 ui.add_space(10.0);
-                                ui.vertical(|ui| {
-                                    ui.add_space(10.0);
-                                    ui.heading(project.name.clone());
-                                    ui.add_space(10.0);
-                                    ui.label(project.description.clone());
-                                    ui.add_space(10.0);
-                                    ui.heading(format!("Image: {:?}", project.image));
-                                    // match project.image.clone() {
-                                    //     Some(url) => {ui.image(url);},
-                                    //     // Some(url) => {ui.image(include_image!("../assets/brainfuck_logo.png"));}
-                                    //     None => ()
-                                    // }
-                                    ui.add_space(10.0);
-                                    ui.label(format!("Year: {}", project.year));
-                                    ui.add_space(10.0);
-                                    ui.separator();
-                                });
+                                ui.heading("Brainfuck Interpreter");
+                                ui.add_space(10.0);
+                                ui.label("Implemented a brainfuck interpreter in Rust🚀 with the brain of the code in about 150 loc. Supports intuitive command line support. A toy project finished in two hours.");
+                                ui.add_space(10.0);
+                                ui.add(
+                                    egui::Image::new(egui::include_image!("../assets/projects/brainfuck_logo.png")).fit_to_original_size(1.0)
+                                );
+                                ui.add_space(10.0);
+                                ui.label(format!("Year: {}", 2023));
+                                ui.add_space(10.0);
+                                ui.separator();
+
+                                // NES Emulator
+                                ui.add_space(10.0);
+                                ui.heading("NES Emulator");
+                                ui.add_space(10.0);
+                                ui.label("Implemented a an NES emulator in rus");
+                                ui.add_space(10.0);
+                                ui.add(
+                                    egui::Image::new(egui::include_image!("../assets/projects/brainfuck_logo.png")).fit_to_original_size(1.0)
+                                );
+                                ui.add_space(10.0);
+                                ui.label(format!("Year: {}", 2023));
+                                ui.add_space(10.0);
+                                ui.separator();
                             });
-                        }
+                        });
                     });
                 }
                 Window::NoteMaker => {

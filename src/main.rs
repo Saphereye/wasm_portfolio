@@ -11,6 +11,7 @@ fn main() -> eframe::Result<()> {
         min_window_size: Some([300.0, 220.0].into()),
         ..Default::default()
     };
+
     eframe::run_native(
         "eframe template",
         native_options,
