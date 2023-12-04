@@ -117,21 +117,27 @@ impl eframe::App for Website {
                     //     Window::NoteMaker,
                     //     RichText::new("📝 Notemaker ").size(self.main_menu_size),
                     // );
-                    ui.selectable_value(
-                        &mut self.current_window,
-                        Window::ExpenseCalculator,
-                        RichText::new("💸 Expense Calculator ").size(self.main_menu_size),
-                    );
+                    // ui.selectable_value(
+                    //     &mut self.current_window,
+                    //     Window::ExpenseCalculator,
+                    //     RichText::new("💸 Expense Calculator ").size(self.main_menu_size),
+                    // );
                     // ui.selectable_value(
                     //     &mut self.current_window,
                     //     Window::Http,
                     //     RichText::new("💸 Http App ").size(self.main_menu_size),
                     // );
 
-                    // ui.hyperlink_to(
-                    //     RichText::new("📄 Resume").size(self.main_menu_size),
-                    //     "https://github.com/Saphereye/resume-and-details/files/12909438/Adarsh_resume.1._compressed.pdf",
+                    // ui.selectable_value(
+                    //     &mut self.current_window,
+                    //     Window::Resume,
+                    //     RichText::new("💸 Resume App ").size(self.main_menu_size),
                     // );
+
+                    ui.hyperlink_to(
+                        RichText::new("📄 Resume").size(self.main_menu_size),
+                        "https://drive.google.com/file/d/1TnOysGFb8FreWxzyTqyW_RSVO3QrxpFR/view?usp=sharing",
+                    );
                 });
             });
             // ui.add_space(20.0);
@@ -144,55 +150,52 @@ impl eframe::App for Website {
                         ui.heading(RichText::new("About Me").size(40.0));
                         ui.label(
                             RichText::new(
-                                "A passionate developer interested in all things computers",
+                                "I am an inquisitive aspiring software developer with and interest in all ﬁelds of computer science ranging from the mathematical foundations to graphics.\nFurthermore, I am self-motivated, enthusiastic, reliable and a responsible team-spirited person with a strong foundation in ethics.",
                             )
                             .italics()
                             .size(20.0),
                         );
                         ui.add_space(10.0);
+
+                        // ui.separator();
+
+                        ui.heading(RichText::new("Education").size(30.0));
                         ui.label(
-                            RichText::new("I am Adarsh Das, currently studying at BITS, Hyd")
-                                .size(20.0),
-                        );    
+                            RichText::new(
+                                "Currently pursuing my B.E. Hons in Computer Science and Minor in Data Science from Birla Institute of Technology and Science, Hyderabad Campus. I am currently in my 3rd year of study.",
+                            )
+                            .size(20.0),
+                        );
+                        ui.add_space(10.0);
                     });
                 }
                 Window::Projects => {
-                    ui.heading("Projects");
+                    egui:: ScrollArea::vertical().show(ui, |ui| {
+                        ui.heading(RichText::new("Research Projects").size(40.0));
+                        add_project(ui, "Chess AI comparative analysis", "Aimed to explore search algorithms to create a novel chess engine. We use python3.10 programming language and chess module as an interace for handling the board. Furthermore chessboard library was used for gui display.", Some("https://github.com/Saphereye/ChessAI"), Some(egui::include_image!("../assets/projects/chess.png")));                                
+                        // add DL, IP project also
+                          
+                        
+                        ui.heading(RichText::new("Work Experience").size(40.0));
+                        add_project(ui, "BC6 data analysis", "This was a project for my research internship at NCPOR, Goa. The project was made using Django. It supports a step by step research submission portal and features such as email verification for proposal acceptance. It also includes a page for visualizing BC6 carbon data.", Some("https://github.com/Saphereye/ncpor-portal-ps2"), Some(egui::include_image!("../assets/projects/data.png")));
+                        add_project(ui, "ServiQuick: One touch emergency services app", "ServiQuik is a user-friendly mobile application designed to provide swift access to emergency services. With just a few taps, you can call for immediate assistance from hospitals, fire stations, or the police. The app employs Text-to-Speech (TTS) technology to convey essential information about the nearest service of your choice and provides a convenient route on the map for your destination.", Some("https://github.com/Saphereye/ServiQuick"), Some(egui::include_image!("../assets/projects/serviquick.png")));
 
-                    egui::ScrollArea::vertical().show(ui, |ui| {
-                        ui.horizontal(|ui| {
-                            ui.add_space(10.0);
-                            ui.vertical(|ui| {
-                                // Brainfuck interpreter
-                                ui.add_space(10.0);
-                                ui.heading("Brainfuck Interpreter");
-                                ui.add_space(10.0);
-                                ui.label("Implemented a brainfuck interpreter in Rust🚀 with the brain of the code in about 150 loc. Supports intuitive command line support. A toy project finished in two hours.");
-                                ui.add_space(10.0);
-                                ui.add(
-                                    egui::Image::new(egui::include_image!("../assets/projects/brainfuck_logo.png")).fit_to_original_size(1.0)
-                                );
-                                ui.add_space(10.0);
-                                ui.label(format!("Year: {}", 2023));
-                                ui.add_space(10.0);
-                                ui.separator();
-
-                                // NES Emulator
-                                ui.add_space(10.0);
-                                ui.heading("NES Emulator");
-                                ui.add_space(10.0);
-                                ui.label("Implemented a an NES emulator in rus");
-                                ui.add_space(10.0);
-                                ui.add(
-                                    egui::Image::new(egui::include_image!("../assets/projects/brainfuck_logo.png")).fit_to_original_size(1.0)
-                                );
-                                ui.add_space(10.0);
-                                ui.label(format!("Year: {}", 2023));
-                                ui.add_space(10.0);
-                                ui.separator();
-                            });
-                        });
+                        ui.heading(RichText::new("Personal Projects").size(40.0));
+                        add_project(ui, "Image display on terminal", "This program addresses the challenge of displaying images in a terminal, which lacks the ability to render small pixels. It achieves this by pixelating the image and leveraging the terminal's color coding capabilities to provide a more accurate representation", Some("https://github.com/Saphereye/image-to-terminal"), Some(egui::include_image!("../assets/projects/imgterm.png")));
+                        add_project(
+                            ui,
+                            "Brainfuck Interpreter", 
+                            "Implemented a brainf*ck interpreter in Rust with the brain of the code in about 150 loc. Supports intuitive command line support. A toy project finished in two hours.\nThe project support improved versions also.\nAs a demo, for the below input", 
+                            Some("https://github.com/Saphereye/brainfuck-interpreter"), 
+                            Some(egui::include_image!("../assets/projects/brainfuck.png")
+                        ));
+                        add_project(ui, "Multipurpose Telegram Bot", "A personal telegram bot implemeted using teloxide library in rust. Supports a wide variety of toy features such as reporting the weather and sending cat pics. Sends a greeting at 8am everyday and can also jot down todos for every user.", Some("https://github.com/Saphereye/herr-jr"), Some(egui::include_image!("../assets/projects/herrjr.png")));
+                        add_project(ui, "NES Emulator", "Implemented a an NES emulator in rust. Supports screen switching and input mapping.", Some("https://github.com/Saphereye/nes_emulator"), Some(egui::include_image!("../assets/projects/nes.png")));
+                        // add_project(ui, "Lan based chatting application", "gg", Some("https://github.com/Saphereye/lan-chat"), None);
+                             
                     });
+                    
+                    
                 }
                 Window::NoteMaker => {
                     ui.heading("NoteMaker");
@@ -307,6 +310,34 @@ impl eframe::App for Website {
             }
         });
     }
+}
+
+fn add_project(
+    ui: &mut Ui,
+    name: &str,
+    description: &str,
+    source_code_link: Option<&str>,
+    image: Option<ImageSource>,
+) {
+    // Image display on terminal
+    ui.add_space(10.0);
+    ui.heading(RichText::new(name).size(30.0));
+    ui.add_space(10.0);
+    ui.label(RichText::new(description).size(20.0));
+    ui.add_space(10.0);
+    if let Some(image) = image {
+        ui.add(
+            egui::Image::new(image)
+                .fit_to_original_size(1.0)
+                .max_width(ui.available_width() * 0.5),
+        );
+    }
+    ui.add_space(10.0);
+    if let Some(source_code_link) = source_code_link {
+        ui.hyperlink_to("Source Code", source_code_link);
+    }
+    ui.add_space(10.0);
+    ui.separator();
 }
 
 fn powered_by_egui_and_eframe(ui: &mut egui::Ui) {

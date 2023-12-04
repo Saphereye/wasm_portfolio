@@ -7,7 +7,12 @@ pub struct Project<'a> {
 }
 
 impl<'a> Project<'a> {
-    pub fn new(name: String, image: Option<egui::Image<'a>>, description: String, year: u32) -> Self {
+    pub fn new(
+        name: String,
+        image: Option<egui::Image<'a>>,
+        description: String,
+        year: u32,
+    ) -> Self {
         Project {
             name,
             image,
