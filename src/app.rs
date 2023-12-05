@@ -1,19 +1,16 @@
 use std::{default, fmt::format, task::Poll};
 
-use egui::*;
+use egui::{*, text::LayoutJob};
 use egui_extras::{Column, TableBuilder};
 
 mod expense_calculator;
 mod graphing_calculator;
 mod http_app;
-mod projects;
 
 use expense_calculator::*;
 use graphing_calculator::*;
 use http_app::*;
-use lazy_static::lazy_static;
 use poll_promise::Promise;
-use projects::*;
 
 #[derive(serde::Deserialize, serde::Serialize, PartialEq)]
 enum Window {
@@ -86,228 +83,168 @@ impl eframe::App for Website {
     /// Called each time the UI needs repainting, which may be many times per second.
     fn update(&mut self, ctx: &egui::Context, _frame: &mut eframe::Frame) {
         egui_extras::install_image_loaders(ctx);
-        // Put your widgets into a `SidePanel`, `TopPanel`, `CentralPanel`, `Window` or `Area`.
-        // For inspiration and more examples, go to https://emilk.github.io/egui
-
-        egui::TopBottomPanel::top("top_panel").show(ctx, |ui| {
-            // The top panel is often a good place for a menu bar:
-            egui::menu::bar(ui, |ui| {
-                // ctx.set_pixels_per_point(2.0);
-                egui::widgets::global_dark_light_mode_switch(ui);
-
-                ui.separator();
-                egui::ScrollArea::horizontal().show(ui, |ui| {
-                    ui.selectable_value(
-                        &mut self.current_window,
-                        Window::About,
-                        RichText::new("👨 About Me").size(self.main_menu_size),
-                    );
-                    ui.selectable_value(
-                        &mut self.current_window,
-                        Window::Projects,
-                        RichText::new("🎮 Projects").size(self.main_menu_size),
-                    );
-                    // ui.selectable_value(
-                    //     &mut self.current_window,
-                    //     Window::GraphingCalculator,
-                    //     RichText::new("📈 Graphing Calculator").size(self.main_menu_size),
-                    // );
-                    // ui.selectable_value(
-                    //     &mut self.current_window,
-                    //     Window::NoteMaker,
-                    //     RichText::new("📝 Notemaker ").size(self.main_menu_size),
-                    // );
-                    // ui.selectable_value(
-                    //     &mut self.current_window,
-                    //     Window::ExpenseCalculator,
-                    //     RichText::new("💸 Expense Calculator ").size(self.main_menu_size),
-                    // );
-                    // ui.selectable_value(
-                    //     &mut self.current_window,
-                    //     Window::Http,
-                    //     RichText::new("💸 Http App ").size(self.main_menu_size),
-                    // );
-
-                    // ui.selectable_value(
-                    //     &mut self.current_window,
-                    //     Window::Resume,
-                    //     RichText::new("💸 Resume App ").size(self.main_menu_size),
-                    // );
-
-                    ui.hyperlink_to(
-                        RichText::new("📄 Resume").size(self.main_menu_size),
-                        "https://drive.google.com/file/d/1TnOysGFb8FreWxzyTqyW_RSVO3QrxpFR/view?usp=sharing",
-                    );
-                });
-            });
-            // ui.add_space(20.0);
-        });
-
         egui::CentralPanel::default().show(ctx, |ui| {
-            match self.current_window {
-                Window::About => {
-                    egui::CentralPanel::default().show(ctx, |ui| {
-                        ui.heading(RichText::new("About Me").size(40.0));
-                        ui.label(
-                            RichText::new(
-                                "I am an inquisitive aspiring software developer with and interest in all ﬁelds of computer science ranging from the mathematical foundations to graphics.\nFurthermore, I am self-motivated, enthusiastic, reliable and a responsible team-spirited person with a strong foundation in ethics.",
-                            )
-                            .italics()
-                            .size(20.0),
-                        );
-                        ui.add_space(10.0);
+            egui::ScrollArea::vertical().show(ui, |ui| {
+                egui::widgets::global_dark_light_mode_switch(ui);
+                ui.vertical_centered(|ui| {
+                    // ui.set_max_width(ui.available_height());
+                    ui.heading(RichText::new("Reden ist Silber, Schweigen ist Gold").size(35.0).italics());
+                    ui.heading(RichText::new("- Büchmann, Georg (1895). Geflügelte Worte").size(18.0).italics());
+                });
+                
+                ui.heading(RichText::new("Table of Contents").size(35.0));
+                let about_me_button =  ui.link(RichText::new("About Me").size(18.0));
+                let education_button = ui.link(RichText::new("Education").size(18.0));
+                let strengths_button = ui.link(RichText::new("Strengths").size(18.0));
+                let coursework_button = ui.link(RichText::new("Coursework").size(18.0));
+                let research_projects_button = ui.link(RichText::new("Research Projects").size(18.0));
+                let work_experience_button = ui.link(RichText::new("Work Experience").size(18.0));
+                let personal_projects_button = ui.link(RichText::new("Personal Projects").size(18.0));
+                let contact_me_button = ui.link(RichText::new("Contact Me").size(18.0));
+                ui.separator();
+                //
+                // About Me
+                //
+                ui.vertical(|ui| {
+                    ui.set_max_width(ui.available_width() * 0.5);
 
-                        // ui.separator();
-
-                        ui.heading(RichText::new("Education").size(30.0));
-                        ui.label(
-                            RichText::new(
-                                "Currently pursuing my B.E. Hons in Computer Science and Minor in Data Science from Birla Institute of Technology and Science, Hyderabad Campus. I am currently in my 3rd year of study.",
-                            )
-                            .size(20.0),
-                        );
-                        ui.add_space(10.0);
-                    });
-                }
-                Window::Projects => {
-                    egui:: ScrollArea::vertical().show(ui, |ui| {
-                        ui.heading(RichText::new("Research Projects").size(40.0));
-                        add_project(ui, "Chess AI comparative analysis", "Aimed to explore search algorithms to create a novel chess engine. We use python3.10 programming language and chess module as an interace for handling the board. Furthermore chessboard library was used for gui display.", Some("https://github.com/Saphereye/ChessAI"), Some(egui::include_image!("../assets/projects/chess.png")));                                
-                        // add DL, IP project also
-                          
-                        
-                        ui.heading(RichText::new("Work Experience").size(40.0));
-                        add_project(ui, "BC6 data analysis", "This was a project for my research internship at NCPOR, Goa. The project was made using Django. It supports a step by step research submission portal and features such as email verification for proposal acceptance. It also includes a page for visualizing BC6 carbon data.", Some("https://github.com/Saphereye/ncpor-portal-ps2"), Some(egui::include_image!("../assets/projects/data.png")));
-                        add_project(ui, "ServiQuick: One touch emergency services app", "ServiQuik is a user-friendly mobile application designed to provide swift access to emergency services. With just a few taps, you can call for immediate assistance from hospitals, fire stations, or the police. The app employs Text-to-Speech (TTS) technology to convey essential information about the nearest service of your choice and provides a convenient route on the map for your destination.", Some("https://github.com/Saphereye/ServiQuick"), Some(egui::include_image!("../assets/projects/serviquick.png")));
-
-                        ui.heading(RichText::new("Personal Projects").size(40.0));
-                        add_project(ui, "Image display on terminal", "This program addresses the challenge of displaying images in a terminal, which lacks the ability to render small pixels. It achieves this by pixelating the image and leveraging the terminal's color coding capabilities to provide a more accurate representation", Some("https://github.com/Saphereye/image-to-terminal"), Some(egui::include_image!("../assets/projects/imgterm.png")));
-                        add_project(
-                            ui,
-                            "Brainfuck Interpreter", 
-                            "Implemented a brainf*ck interpreter in Rust with the brain of the code in about 150 loc. Supports intuitive command line support. A toy project finished in two hours.\nThe project support improved versions also.\nAs a demo, for the below input", 
-                            Some("https://github.com/Saphereye/brainfuck-interpreter"), 
-                            Some(egui::include_image!("../assets/projects/brainfuck.png")
-                        ));
-                        add_project(ui, "Multipurpose Telegram Bot", "A personal telegram bot implemeted using teloxide library in rust. Supports a wide variety of toy features such as reporting the weather and sending cat pics. Sends a greeting at 8am everyday and can also jot down todos for every user.", Some("https://github.com/Saphereye/herr-jr"), Some(egui::include_image!("../assets/projects/herrjr.png")));
-                        add_project(ui, "NES Emulator", "Implemented a an NES emulator in rust. Supports screen switching and input mapping.", Some("https://github.com/Saphereye/nes_emulator"), Some(egui::include_image!("../assets/projects/nes.png")));
-                        // add_project(ui, "Lan based chatting application", "gg", Some("https://github.com/Saphereye/lan-chat"), None);
-                             
-                    });
-                    
-                    
-                }
-                Window::NoteMaker => {
-                    ui.heading("NoteMaker");
-                }
-                Window::Resume => {
-                    // The central panel the region left after adding TopPanel's and SidePanel's
-                    ui.heading("Resume");
-
-                    ui.horizontal(|ui| {
-                        ui.label("Go on write something");
-                        ui.text_edit_singleline(&mut self.label);
-                    });
-
-                    ui.add(egui::Slider::new(&mut self.value, 0.0..=10.0).text("value"));
-                    if ui.button("Increase number").clicked() {
-                        self.value += 0.1_f32;
+                    let response = ui.heading(RichText::new("About Me").size(35.0));
+                    if about_me_button.clicked() {
+                        response.scroll_to_me(Some(Align::Min));
                     }
+                    ui.horizontal_wrapped(|ui| {
+                        // ui.set_max_width(ui.available_width() * 0.5);
+                        ui.label(RichText::new("I am").size(18.0));
+                        ui.label(RichText::new("Adarsh Das").size(18.0).underline());
+                        ui.label(RichText::new(", an inquisitive aspiring software developer with an interest in all ﬁelds of computer science ranging from the mathematical foundations to graphics.").size(18.0));
+                    });
+                    ui.label(RichText::new("Furthermore, I am self-motivated, enthusiastic, reliable and a responsible team-spirited person with a strong foundation in ethics.").size(18.0));
+                    
+                    ui.hyperlink_to("Résumé", "https://drive.google.com/file/d/1TnOysGFb8FreWxzyTqyW_RSVO3QrxpFR/view");
+
 
                     ui.separator();
+                    ui.add_space(10.0);
 
-                    ui.add(egui::github_link_file!(
-                        "https://github.com/emilk/eframe_template/blob/master/",
-                        "Source code."
-                    ));
-
-                    ui.with_layout(egui::Layout::bottom_up(egui::Align::LEFT), |ui| {
-                        powered_by_egui_and_eframe(ui);
-                        egui::warn_if_debug_build(ui);
-                    });
-                }
-                Window::GraphingCalculator => {
-                    egui::SidePanel::right("graph_panel")
-                        .width_range(Rangef {
-                            min: 500.0,
-                            max: 800.0,
-                        })
-                        .show(ctx, |ui| {
-                            self.graphing_calculator_app.ui(ui);
-                        });
-
-                    egui::CentralPanel::default().show(ctx, |ui| {
-                        // self.graphing_calculator_app.equations.push("69420".to_string());
-                        ui.heading("Equations");
-                        // ui.horizontal(|ui| {
-                        //     ui.text_edit_singleline(&mut self.graphing_calculator_app.equations[0]);
-                        //     // ui.text_edit_singleline(&mut self.graphing_calculator_app.equations[1]);
-                        // });
-                        ui.vertical(|ui| {
-                            for equation in self.graphing_calculator_app.equations.iter_mut() {
-                                ui.text_edit_singleline(equation);
-                            }
-                        });
-                        ui.heading(format!("{:?}", self.graphing_calculator_app.equations));
-                        ui.ctx().request_repaint();
-                        // ui.heading(self.graphing_calculator_app.equations[1].clone());
-                    });
-                }
-                Window::ExpenseCalculator => {
-                    ui.heading("Expense Calculator");
-
-                    if ui
-                        .text_edit_multiline(&mut self.expense_calculator_app.input)
-                        .changed()
-                    {
-                        self.expense_calculator_app.find_contributions();
+                    let reponse = ui.heading(RichText::new("Education").size(35.0));
+                    if education_button.clicked() {
+                        reponse.scroll_to_me(Some(Align::Min));
                     }
+                    ui.horizontal_wrapped(|ui| {
+                        ui.label(RichText::new("Currently pursuing my",).size(18.0),);
+                        ui.label(RichText::new("B.E. Hons in Computer Science and Minor in Data Science",).size(18.0).underline(),);
+                        ui.label(RichText::new("from",).size(18.0),);
+                        ui.label(RichText::new("Birla Institute of Technology and Science, Hyderabad Campus.",).size(18.0).underline(),);
+                    });
+                    ui.label(RichText::new("I am currently in my third year of study.").size(18.0));
+                    ui.add_space(10.0);
+                    ui.separator();
 
-                    // ui.heading(format!("{:?}", self.expense_calculator_app.contributions));
-                    // ui.heading(self.expense_calculator_app.output.clone());
+                    let response = ui.heading(RichText::new("Strengths").size(35.0));
+                    if strengths_button.clicked() {
+                        response.scroll_to_me(Some(Align::Min));
+                    }
+                    ui.horizontal(|ui| {
+                        let _ = ui.button(RichText::new("Python").size(18.0));
+                        let _ = ui.button(RichText::new("C++").size(18.0));
+                        let _ = ui.button(RichText::new("C").size(18.0));
+                        let _ = ui.button(RichText::new("Git").size(18.0));
+                        let _ = ui.button(RichText::new("Godot").size(18.0));
+                        let _ = ui.button(RichText::new("OpenGL").size(18.0));
+                        let _ = ui.button(RichText::new("Java").size(18.0));
+                        let _ = ui.button(RichText::new("Rust").size(18.0));
+                        let _ = ui.button(RichText::new("Sklearn").size(18.0));
+                        let _ = ui.button(RichText::new("Pandas").size(18.0));
+                        let _ = ui.button(RichText::new("Django").size(18.0));
+                    });
+                    ui.add_space(10.0);
+                    ui.separator();
 
-                    TableBuilder::new(ui)
-                        .striped(true)
-                        .column(Column::auto().resizable(true))
-                        .column(Column::auto().resizable(true))
-                        .column(Column::auto().resizable(true))
-                        .column(Column::remainder())
-                        .header(20.0, |mut header| {
-                            header.col(|ui| {
-                                ui.heading("Payer");
-                            });
-                            header.col(|ui| {
-                                ui.heading("Receiver");
-                            });
-                            header.col(|ui| {
-                                ui.heading("Amount (₹)");
-                            });
-                        })
-                        .body(|mut body| {
-                            for (payer, receiver, amount) in
-                                self.expense_calculator_app.transaction_history.clone()
-                            {
-                                body.row(30.0, |mut row| {
-                                    row.col(|ui| {
-                                        ui.label(payer);
-                                    });
-                                    row.col(|ui| {
-                                        ui.label(receiver);
-                                    });
-                                    row.col(|ui| {
-                                        ui.label(amount.to_string());
-                                    });
-                                });
-                            }
-                        });
-                } // Window::Http => {
-                  //     ui.heading("Http App");
+                    let response = ui.heading(RichText::new("Coursework").size(35.0));
+                    if coursework_button.clicked() {
+                        response.scroll_to_me(Some(Align::Min));
+                    }
+                    ui.horizontal_wrapped(|ui| {
+                        ui.set_max_width(ui.available_width());
+                        let _ = ui.button(RichText::new("Data Structures and Algorithms").size(18.0));
+                        let _ = ui.button(RichText::new("Database Systems").size(18.0));
+                        let _ = ui.button(RichText::new("Object Oriented Programming").size(18.0));
+                        let _ = ui.button(RichText::new("Operating Systems").size(18.0));
+                        let _ = ui.button(RichText::new("Computer Architecture").size(18.0));
+                        let _ = ui.button(RichText::new("Deep Learning").size(18.0));
+                        let _ = ui.button(RichText::new("Machine Learning").size(18.0));
+                        let _ = ui.button(RichText::new("Artificial Intelligence").size(18.0));
+                        let _ = ui.button(RichText::new("Image Processing").size(18.0));
+                        let _ = ui.button(RichText::new("Theory of Computation").size(18.0));
+                        let _ = ui.button(RichText::new("Principles of programming languages").size(18.0));
+                        let _ = ui.button(RichText::new("Discrete Structure in Computer Science").size(18.0));
+                        let _ = ui.button(RichText::new("Logic in Computer Science").size(18.0));
+                        let _ = ui.button(RichText::new("Digital Design").size(18.0));
+                        let _ = ui.button(RichText::new("Computer Programming").size(18.0));
+                        let _ = ui.button(RichText::new("Probability and Statistics").size(18.0));
+                        let _ = ui.button(RichText::new("Linear Algebra").size(18.0));
+                        let _ = ui.button(RichText::new("Differential Calculus").size(18.0));
+                        let _ = ui.button(RichText::new("Principles of Management").size(18.0));
+                        let _ = ui.button(RichText::new("Technical Report Writing").size(18.0));
 
-                  //     if ui.button("Press me").clicked() {
-                  //         self.http_app.fetch_data(ui);
-                  //     }
-                  // }
-            }
+                    });
+                    ui.add_space(10.0);
+                    ui.separator();
+                });
+
+                ui.vertical(|ui| {
+                    //
+                    // Projects
+                    //
+                    let response = ui.heading(RichText::new("Research Projects").size(35.0));
+                    if research_projects_button.clicked() {
+                        response.scroll_to_me(Some(Align::Min));
+                    }
+                    add_project(ui, "Chess AI comparative analysis", "Aimed to explore search algorithms to create a novel chess engine. We use python3.10 programming language and chess module as an interace for handling the board. Furthermore chessboard library was used for gui display.", Some("https://github.com/Saphereye/ChessAI"), Some(egui::include_image!("../assets/projects/chess.png")));                                
+                    // add DL, IP project also
+                        
+                    
+                    let response = ui.heading(RichText::new("Work Experience").size(35.0));
+                    if work_experience_button.clicked() {
+                        response.scroll_to_me(Some(Align::Min));
+                    }
+                    add_project(ui, "BC6 data analysis", "This was a project for my research internship at NCPOR, Goa. The project was made using Django. It supports a step by step research submission portal and features such as email verification for proposal acceptance. It also includes a page for visualizing BC6 carbon data.", Some("https://github.com/Saphereye/ncpor-portal-ps2"), Some(egui::include_image!("../assets/projects/data.png")));
+                    add_project(ui, "ServiQuick: One touch emergency services app", "ServiQuik is a user-friendly mobile application designed to provide swift access to emergency services. With just a few taps, you can call for immediate assistance from hospitals, fire stations, or the police. The app employs Text-to-Speech (TTS) technology to convey essential information about the nearest service of your choice and provides a convenient route on the map for your destination.", Some("https://github.com/Saphereye/ServiQuick"), Some(egui::include_image!("../assets/projects/serviquick.png")));
+
+                    let response = ui.heading(RichText::new("Personal Projects").size(35.0));
+                    if personal_projects_button.clicked() {
+                        response.scroll_to_me(Some(Align::Min));
+                    }
+                    add_project(ui, "Image display on terminal", "This program addresses the challenge of displaying images in a terminal, which lacks the ability to render small pixels. It achieves this by pixelating the image and leveraging the terminal's color coding capabilities to provide a more accurate representation", Some("https://github.com/Saphereye/image-to-terminal"), Some(egui::include_image!("../assets/projects/imgterm.png")));
+                    add_project(
+                        ui,
+                        "Brainfuck Interpreter", 
+                        "Implemented a brainf*ck interpreter in Rust with the brain of the code in about 150 loc. Supports intuitive command line support. A toy project finished in two hours.\nThe project support improved versions also.\nAs a demo, for the below input", 
+                        Some("https://github.com/Saphereye/brainfuck-interpreter"), 
+                        Some(egui::include_image!("../assets/projects/brainfuck.png")
+                    ));
+                    add_project(ui, "Multipurpose Telegram Bot", "A personal telegram bot implemeted using teloxide library in rust. Supports a wide variety of toy features such as reporting the weather and sending cat pics. Sends a greeting at 8am everyday and can also jot down todos for every user.", Some("https://github.com/Saphereye/herr-jr"), Some(egui::include_image!("../assets/projects/herrjr.png")));
+                    add_project(ui, "NES Emulator", "Implemented a an NES emulator in rust. Supports screen switching and input mapping.", Some("https://github.com/Saphereye/nes_emulator"), Some(egui::include_image!("../assets/projects/nes.png")));
+                    // add_project(ui, "Lan based chatting application", "gg", Some("https://github.com/Saphereye/lan-chat"), None);  
+                });
+
+                //
+                // Contact Me
+                //
+                ui.vertical(|ui| {
+                    ui.set_max_width(ui.available_width());
+                    
+                    let response = ui.heading(RichText::new("Contact Me").size(35.0));
+                    if contact_me_button.clicked() {
+                        response.scroll_to_me(Some(Align::Min));
+                    }
+                    ui.hyperlink_to(RichText::new("Email: adarshdas950@gmail.com",).size(18.0), "mailto:adarshdas950@gmail.com");
+                    ui.hyperlink_to(RichText::new("Phone Number: +91 85278 5966",).size(18.0), "tel:+91852785966");
+                    ui.hyperlink_to(RichText::new("Résumé",).size(18.0), "https://drive.google.com/file/d/1TnOysGFb8FreWxzyTqyW_RSVO3QrxpFR/view");
+                    ui.add_space(10.0);
+                    ui.hyperlink_to(RichText::new("Favorite Fungi: Spongiforma squarepantsii",).size(18.0), "https://en.wikipedia.org/wiki/Spongiforma_squarepantsii");
+                });
+            })              
         });
     }
 }
@@ -317,39 +254,25 @@ fn add_project(
     name: &str,
     description: &str,
     source_code_link: Option<&str>,
-    image: Option<ImageSource>,
+    image: Option<ImageSource<'_>>,
 ) {
     // Image display on terminal
     ui.add_space(10.0);
-    ui.heading(RichText::new(name).size(30.0));
+    ui.hyperlink_to(RichText::new(name).size(30.0), source_code_link.unwrap_or("#"));
     ui.add_space(10.0);
-    ui.label(RichText::new(description).size(20.0));
+    ui.label(RichText::new(description).size(18.0));
     ui.add_space(10.0);
     if let Some(image) = image {
         ui.add(
             egui::Image::new(image)
                 .fit_to_original_size(1.0)
-                .max_width(ui.available_width() * 0.5),
+                .max_width(ui.available_width() * 0.75),
         );
     }
     ui.add_space(10.0);
-    if let Some(source_code_link) = source_code_link {
-        ui.hyperlink_to("Source Code", source_code_link);
-    }
-    ui.add_space(10.0);
+    // if let Some(source_code_link) = source_code_link {
+    //     ui.hyperlink_to("Source Code", source_code_link);
+    // }
+    // ui.add_space(10.0);
     ui.separator();
-}
-
-fn powered_by_egui_and_eframe(ui: &mut egui::Ui) {
-    ui.horizontal(|ui| {
-        ui.spacing_mut().item_spacing.x = 0.0;
-        ui.label("Powered by ");
-        ui.hyperlink_to("egui", "https://github.com/emilk/egui");
-        ui.label(" and ");
-        ui.hyperlink_to(
-            "eframe",
-            "https://github.com/emilk/egui/tree/master/crates/eframe",
-        );
-        ui.label(".");
-    });
 }
