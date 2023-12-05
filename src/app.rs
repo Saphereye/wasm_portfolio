@@ -123,8 +123,8 @@ impl eframe::App for Website {
                 strengths_button = Some(ui.link(RichText::new("- Strengths").size(18.0)));
                 coursework_button = Some(ui.link(RichText::new("- Coursework").size(18.0)));
                 research_projects_button = Some(ui.link(RichText::new("- Research Projects").size(18.0)));
-                work_experience_button = Some(ui.link(RichText::new("- Work Experience").size(18.0)));
-                personal_projects_button = Some(ui.link(RichText::new("- Personal Projects").size(18.0)));
+                work_experience_button = Some(ui.link(RichText::new("- Work Experience, Competetions and Club activities").size(18.0)));
+                personal_projects_button = Some(ui.link(RichText::new("- Hobby Projects").size(18.0)));
                 ui.separator();
     
                 //
@@ -135,6 +135,10 @@ impl eframe::App for Website {
                     ui.hyperlink_to(RichText::new("Email: adarshdas950@gmail.com",).size(18.0), "mailto:adarshdas950@gmail.com");
                     ui.add_space(10.0);
                     ui.hyperlink_to(RichText::new("Phone Number: +91 85278 5966",).size(18.0), "tel:+91852785966");
+                    ui.add_space(10.0);
+                    ui.hyperlink_to(RichText::new("Github",).size(18.0), "https://github.com/Saphereye");
+                    ui.add_space(10.0);
+                    ui.hyperlink_to(RichText::new("Linkedin",).size(18.0), "https://www.linkedin.com/in/adarsh-das-8684ab240/");
                     ui.add_space(10.0);
                     ui.hyperlink_to(RichText::new("Résumé",).size(18.0), "https://drive.google.com/file/d/1TnOysGFb8FreWxzyTqyW_RSVO3QrxpFR/view");
                     ui.add_space(10.0);
@@ -268,11 +272,12 @@ impl eframe::App for Website {
                             response.scroll_to_me(Some(Align::Min));
                         }
                     }
-                    add_project(ui, "Chess AI comparative analysis", "Aimed to explore search algorithms to create a novel chess engine. We use python3.10 programming language and chess module as an interace for handling the board. Furthermore chessboard library was used for gui display.", Some("https://github.com/Saphereye/ChessAI"), Some(egui::include_image!("../assets/projects/chess.png")));                                
-                    // add DL, IP project also
+                    add_project(ui, "Chess AI comparative analysis", "Aimed to explore search algorithms to create a novel chess engine. We use python3.10 programming language and chess module as an interace for handling the board. Furthermore chessboard library was used for gui display.", Some("https://github.com/Saphereye/ChessAI"), Some(egui::include_image!("../assets/projects/chess.png")));
+                    add_project(ui, "Malaria Cell classification using state-of-the-art Vision Tranformer", "The project utilized vision transformer trained on various processed images of the training data such as green channel, green channle canny filtered and klahe filter. The individual models where then combined using a ensemble methods. The validation set gave 99.7% accuracy and the testing accuracy was ~94%", None, Some(egui::include_image!("../assets/projects/ip.png")));
+                    add_project(ui, "Pneumonia diagnosis using chest X-ray", "The project leveraged vision transformers architecture for pneumonia diagnosis. The project also included implementing methods for improving upon the research paper on which it was implemented", None, Some(egui::include_image!("../assets/projects/dl.png")));
                         
                     
-                    let response = ui.heading(RichText::new("Work Experience").size(35.0));
+                    let response = ui.heading(RichText::new("Work Experience, Competetions and Club activities").size(35.0));
                     if let Some(work_experience_button) = work_experience_button {
                         if work_experience_button.clicked() {
                             response.scroll_to_me(Some(Align::Min));
@@ -280,8 +285,10 @@ impl eframe::App for Website {
                     }
                     add_project(ui, "BC6 data analysis", "This was a project for my research internship at NCPOR, Goa. The project was made using Django. It supports a step by step research submission portal and features such as email verification for proposal acceptance. It also includes a page for visualizing BC6 carbon data.", Some("https://github.com/Saphereye/ncpor-portal-ps2"), Some(egui::include_image!("../assets/projects/data.png")));
                     add_project(ui, "ServiQuick: One touch emergency services app", "ServiQuik is a user-friendly mobile application designed to provide swift access to emergency services. With just a few taps, you can call for immediate assistance from hospitals, fire stations, or the police. The app employs Text-to-Speech (TTS) technology to convey essential information about the nearest service of your choice and provides a convenient route on the map for your destination.", Some("https://github.com/Saphereye/ServiQuick"), Some(egui::include_image!("../assets/projects/serviquick.png")));
+                    add_project(ui, "Article: Free Software Movement and its Importance in the Modern World", "In today’s digital world, every aspect of our lives is intertwined with computers. A “computer” will play a considerable part in official work or leisure activities. With such a significant dependence on this technology, the idea of not having control over what we use is absurd. This is, sadly, the current situation with proprietary software. This article explores this problem in detail", Some("https://csabitsh.wordpress.com/2022/10/15/free-software-movement-and-its-importance-in-the-modern-world/"), Some(egui::include_image!("../assets/projects/fsm.webp")));
+                    add_project(ui, "Article: A Brief History of Computer Graphics", "Millions of people watch movies every year, marveling at the impeccable CGI (Computer-generated imagery). According to some studies, teens use their phones for an average of about 8 hours a week, surfing social media and popular websites like YouTube. Knowingly or unknowingly, computer graphics is inherent everywhere around us. Consumers often overlook how much computer graphics is part of their lives, from bringing their favorite characters to life to providing realistic simulations. This article explores this topic in detail", Some("https://csabitsh.wordpress.com/a-brief-history-of-computer-graphics/"), Some(egui::include_image!("../assets/projects/graphics2.jpg")));
 
-                    let response = ui.heading(RichText::new("Personal Projects").size(35.0));
+                    let response = ui.heading(RichText::new("Hobby Projects").size(35.0));
                     if let Some(personal_projects_button) = personal_projects_button {
                         if personal_projects_button.clicked() {
                             response.scroll_to_me(Some(Align::Min));
@@ -314,7 +321,11 @@ fn add_project(
 ) {
     // Image display on terminal
     ui.add_space(10.0);
-    ui.hyperlink_to(RichText::new(name).size(30.0), source_code_link.unwrap_or("#"));
+    if let Some(source_code_link) = source_code_link {
+        ui.hyperlink_to(RichText::new(name).size(30.0), source_code_link);
+    } else {
+        ui.heading(RichText::new(name).size(30.0));
+    }
     ui.add_space(10.0);
     ui.label(RichText::new(description).size(18.0));
     ui.add_space(10.0);
