@@ -83,34 +83,67 @@ impl eframe::App for Website {
     /// Called each time the UI needs repainting, which may be many times per second.
     fn update(&mut self, ctx: &egui::Context, _frame: &mut eframe::Frame) {
         egui_extras::install_image_loaders(ctx);
-        egui::CentralPanel::default().show(ctx, |ui| {
-            egui::ScrollArea::vertical().show(ui, |ui| {
+
+        egui::TopBottomPanel::top("quote").show(ctx, |ui| {
+            ui.horizontal(|ui| {
                 egui::widgets::global_dark_light_mode_switch(ui);
                 ui.vertical_centered(|ui| {
                     // ui.set_max_width(ui.available_height());
                     ui.heading(RichText::new("Reden ist Silber, Schweigen ist Gold").size(35.0).italics());
                     ui.heading(RichText::new("- Büchmann, Georg (1895). Geflügelte Worte").size(18.0).italics());
                 });
-                
-                ui.heading(RichText::new("Table of Contents").size(35.0));
-                let about_me_button =  ui.link(RichText::new("About Me").size(18.0));
-                let education_button = ui.link(RichText::new("Education").size(18.0));
-                let strengths_button = ui.link(RichText::new("Strengths").size(18.0));
-                let coursework_button = ui.link(RichText::new("Coursework").size(18.0));
-                let research_projects_button = ui.link(RichText::new("Research Projects").size(18.0));
-                let work_experience_button = ui.link(RichText::new("Work Experience").size(18.0));
-                let personal_projects_button = ui.link(RichText::new("Personal Projects").size(18.0));
-                let contact_me_button = ui.link(RichText::new("Contact Me").size(18.0));
-                ui.separator();
+                ui.add_space(10.0);
+            });
+            
+        });
+        
+        
+
+        let mut about_me_button: Option<egui::Response> = None;
+        let mut education_button: Option<egui::Response> = None;
+        let mut strengths_button: Option<egui::Response> = None;
+        let mut coursework_button: Option<egui::Response> = None;
+        let mut research_projects_button: Option<egui::Response> = None;
+        let mut work_experience_button: Option<egui::Response> = None;
+        let mut personal_projects_button: Option<egui::Response> = None;
+
+        egui::SidePanel::left("table_of_contents").show(ctx, |ui| {
+            ui.heading(RichText::new("Table of Contents").size(35.0));
+            about_me_button = Some( ui.link(RichText::new("About Me").size(18.0)));
+            education_button = Some(ui.link(RichText::new("Education").size(18.0)));
+            strengths_button = Some(ui.link(RichText::new("Strengths").size(18.0)));
+            coursework_button = Some(ui.link(RichText::new("Coursework").size(18.0)));
+            research_projects_button = Some(ui.link(RichText::new("Research Projects").size(18.0)));
+            work_experience_button = Some(ui.link(RichText::new("Work Experience").size(18.0)));
+            personal_projects_button = Some(ui.link(RichText::new("Personal Projects").size(18.0)));
+            ui.separator();
+
+            //
+            // Contact Me
+            //
+            ui.vertical(|ui| {
+                ui.set_max_width(ui.available_width());
+                ui.hyperlink_to(RichText::new("Email: adarshdas950@gmail.com",).size(18.0), "mailto:adarshdas950@gmail.com");
+                ui.hyperlink_to(RichText::new("Phone Number: +91 85278 5966",).size(18.0), "tel:+91852785966");
+                ui.hyperlink_to(RichText::new("Résumé",).size(18.0), "https://drive.google.com/file/d/1TnOysGFb8FreWxzyTqyW_RSVO3QrxpFR/view");
+                ui.add_space(10.0);
+                ui.hyperlink_to(RichText::new("Favorite Fungi: Spongiforma squarepantsii",).size(18.0), "https://en.wikipedia.org/wiki/Spongiforma_squarepantsii");
+            });
+        });
+
+        egui::CentralPanel::default().show(ctx, |ui| {
+            egui::ScrollArea::vertical().show(ui, |ui| {
                 //
                 // About Me
                 //
                 ui.vertical(|ui| {
-                    ui.set_max_width(ui.available_width() * 0.5);
+                    // ui.set_max_width(ui.available_width() * 0.5);
 
                     let response = ui.heading(RichText::new("About Me").size(35.0));
-                    if about_me_button.clicked() {
-                        response.scroll_to_me(Some(Align::Min));
+                    if let Some(about_me_button) = about_me_button {
+                        if about_me_button.clicked() {
+                            response.scroll_to_me(Some(Align::Min));
+                        }
                     }
                     ui.horizontal_wrapped(|ui| {
                         // ui.set_max_width(ui.available_width() * 0.5);
@@ -126,9 +159,11 @@ impl eframe::App for Website {
                     ui.separator();
                     ui.add_space(10.0);
 
-                    let reponse = ui.heading(RichText::new("Education").size(35.0));
-                    if education_button.clicked() {
-                        reponse.scroll_to_me(Some(Align::Min));
+                    let response = ui.heading(RichText::new("Education").size(35.0));
+                    if let Some(education_button) = education_button {
+                        if education_button.clicked() {
+                            response.scroll_to_me(Some(Align::Min));
+                        }
                     }
                     ui.horizontal_wrapped(|ui| {
                         ui.label(RichText::new("Currently pursuing my",).size(18.0),);
@@ -141,8 +176,10 @@ impl eframe::App for Website {
                     ui.separator();
 
                     let response = ui.heading(RichText::new("Strengths").size(35.0));
-                    if strengths_button.clicked() {
-                        response.scroll_to_me(Some(Align::Min));
+                    if let Some(strengths_button) = strengths_button {
+                        if strengths_button.clicked() {
+                            response.scroll_to_me(Some(Align::Min));
+                        }
                     }
                     ui.horizontal(|ui| {
                         let _ = ui.button(RichText::new("Python").size(18.0));
@@ -161,8 +198,10 @@ impl eframe::App for Website {
                     ui.separator();
 
                     let response = ui.heading(RichText::new("Coursework").size(35.0));
-                    if coursework_button.clicked() {
-                        response.scroll_to_me(Some(Align::Min));
+                    if let Some(coursework_button) = coursework_button {
+                        if coursework_button.clicked() {
+                            response.scroll_to_me(Some(Align::Min));
+                        }
                     }
                     ui.horizontal_wrapped(|ui| {
                         ui.set_max_width(ui.available_width());
@@ -197,23 +236,29 @@ impl eframe::App for Website {
                     // Projects
                     //
                     let response = ui.heading(RichText::new("Research Projects").size(35.0));
-                    if research_projects_button.clicked() {
-                        response.scroll_to_me(Some(Align::Min));
+                    if let Some(research_projects_button) = research_projects_button {
+                        if research_projects_button.clicked() {
+                            response.scroll_to_me(Some(Align::Min));
+                        }
                     }
                     add_project(ui, "Chess AI comparative analysis", "Aimed to explore search algorithms to create a novel chess engine. We use python3.10 programming language and chess module as an interace for handling the board. Furthermore chessboard library was used for gui display.", Some("https://github.com/Saphereye/ChessAI"), Some(egui::include_image!("../assets/projects/chess.png")));                                
                     // add DL, IP project also
                         
                     
                     let response = ui.heading(RichText::new("Work Experience").size(35.0));
-                    if work_experience_button.clicked() {
-                        response.scroll_to_me(Some(Align::Min));
+                    if let Some(work_experience_button) = work_experience_button {
+                        if work_experience_button.clicked() {
+                            response.scroll_to_me(Some(Align::Min));
+                        }
                     }
                     add_project(ui, "BC6 data analysis", "This was a project for my research internship at NCPOR, Goa. The project was made using Django. It supports a step by step research submission portal and features such as email verification for proposal acceptance. It also includes a page for visualizing BC6 carbon data.", Some("https://github.com/Saphereye/ncpor-portal-ps2"), Some(egui::include_image!("../assets/projects/data.png")));
                     add_project(ui, "ServiQuick: One touch emergency services app", "ServiQuik is a user-friendly mobile application designed to provide swift access to emergency services. With just a few taps, you can call for immediate assistance from hospitals, fire stations, or the police. The app employs Text-to-Speech (TTS) technology to convey essential information about the nearest service of your choice and provides a convenient route on the map for your destination.", Some("https://github.com/Saphereye/ServiQuick"), Some(egui::include_image!("../assets/projects/serviquick.png")));
 
                     let response = ui.heading(RichText::new("Personal Projects").size(35.0));
-                    if personal_projects_button.clicked() {
-                        response.scroll_to_me(Some(Align::Min));
+                    if let Some(personal_projects_button) = personal_projects_button {
+                        if personal_projects_button.clicked() {
+                            response.scroll_to_me(Some(Align::Min));
+                        }
                     }
                     add_project(ui, "Image display on terminal", "This program addresses the challenge of displaying images in a terminal, which lacks the ability to render small pixels. It achieves this by pixelating the image and leveraging the terminal's color coding capabilities to provide a more accurate representation", Some("https://github.com/Saphereye/image-to-terminal"), Some(egui::include_image!("../assets/projects/imgterm.png")));
                     add_project(
@@ -227,25 +272,9 @@ impl eframe::App for Website {
                     add_project(ui, "NES Emulator", "Implemented a an NES emulator in rust. Supports screen switching and input mapping.", Some("https://github.com/Saphereye/nes_emulator"), Some(egui::include_image!("../assets/projects/nes.png")));
                     // add_project(ui, "Lan based chatting application", "gg", Some("https://github.com/Saphereye/lan-chat"), None);  
                 });
-
-                //
-                // Contact Me
-                //
-                ui.vertical(|ui| {
-                    ui.set_max_width(ui.available_width());
-                    
-                    let response = ui.heading(RichText::new("Contact Me").size(35.0));
-                    if contact_me_button.clicked() {
-                        response.scroll_to_me(Some(Align::Min));
-                    }
-                    ui.hyperlink_to(RichText::new("Email: adarshdas950@gmail.com",).size(18.0), "mailto:adarshdas950@gmail.com");
-                    ui.hyperlink_to(RichText::new("Phone Number: +91 85278 5966",).size(18.0), "tel:+91852785966");
-                    ui.hyperlink_to(RichText::new("Résumé",).size(18.0), "https://drive.google.com/file/d/1TnOysGFb8FreWxzyTqyW_RSVO3QrxpFR/view");
-                    ui.add_space(10.0);
-                    ui.hyperlink_to(RichText::new("Favorite Fungi: Spongiforma squarepantsii",).size(18.0), "https://en.wikipedia.org/wiki/Spongiforma_squarepantsii");
-                });
-            })              
+            })
         });
+
     }
 }
 
