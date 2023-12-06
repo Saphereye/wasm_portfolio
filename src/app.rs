@@ -117,7 +117,7 @@ impl eframe::App for Website {
         if window_width > 972.0 {
             egui::SidePanel::left("table_of_contents").show(ctx, |ui| {
                 // ui.heading(format!("{:?}", ui.available_size()));
-                ui.heading(RichText::new("Table of Contents").size(35.0));
+                ui.heading(RichText::new("Table of Contents").size(25.0));
                 about_me_button = Some( ui.link(RichText::new("- About Me").size(18.0)));
                 education_button = Some(ui.link(RichText::new("- Education").size(18.0)));
                 strengths_button = Some(ui.link(RichText::new("- Strengths").size(18.0)));
@@ -132,6 +132,8 @@ impl eframe::App for Website {
                 //
                 ui.vertical(|ui| {
                     ui.set_max_width(ui.available_width());
+
+                    ui.heading(RichText::new("Contact Me").size(25.0));
                     ui.hyperlink_to(RichText::new("Email: adarshdas950@gmail.com",).size(18.0), "mailto:adarshdas950@gmail.com");
                     ui.add_space(10.0);
                     ui.hyperlink_to(RichText::new("Phone Number: +91 85278 5966",).size(18.0), "tel:+91852785966");
@@ -144,7 +146,19 @@ impl eframe::App for Website {
                     ui.add_space(10.0);
                     ui.separator();
                     ui.add_space(10.0);
+
+                    ui.heading(RichText::new("Linguistic Proficiency").size(25.0));
+                    ui.label(RichText::new("English (A1)").size(18.0));
+                    ui.label(RichText::new("German (B2)").size(18.0));
+                    ui.label(RichText::new("Hindi (Native)").size(18.0));
+                    ui.add_space(10.0);
+                    ui.separator();                 
+
+                    ui.add_space(10.0);
+                    ui.heading(RichText::new("Misc.").size(25.0));
                     ui.hyperlink_to(RichText::new("Favorite Fungi: Spongiforma squarepantsii",).size(18.0), "https://en.wikipedia.org/wiki/Spongiforma_squarepantsii");
+                    ui.hyperlink_to(RichText::new("Favorite Insect: Aha ha",).size(18.0), "https://en.wikipedia.org/wiki/Aha_ha");
+                    ui.separator();
                 });
                 
                 ui.with_layout(egui::Layout::bottom_up(egui::Align::LEFT), |ui| {
@@ -180,6 +194,7 @@ impl eframe::App for Website {
                     ui.horizontal_wrapped(|ui| {
                         // ui.set_max_width(ui.available_width() * 0.5);
                         ui.label(RichText::new("I am").size(18.0));
+                        // pronunciation: [ɑːˈd̪ɐɾ.ɕ/]
                         ui.label(RichText::new("Adarsh Das").size(18.0).underline());
                         ui.label(RichText::new(", an inquisitive aspiring software developer with an interest in all ﬁelds of computer science ranging from the mathematical foundations to graphics.").size(18.0));
                     });
@@ -260,9 +275,7 @@ impl eframe::App for Website {
                     });
                     ui.add_space(10.0);
                     ui.separator();
-                });
 
-                ui.vertical(|ui| {
                     //
                     // Projects
                     //
@@ -305,7 +318,22 @@ impl eframe::App for Website {
                     add_project(ui, "Multipurpose Telegram Bot", "A personal telegram bot implemeted using teloxide library in rust. Supports a wide variety of toy features such as reporting the weather and sending cat pics. Sends a greeting at 8am everyday and can also jot down todos for every user.", Some("https://github.com/Saphereye/herr-jr"), Some(egui::include_image!("../assets/projects/herrjr.png")));
                     add_project(ui, "NES Emulator", "Implemented a an NES emulator in rust. Supports screen switching and input mapping.", Some("https://github.com/Saphereye/nes_emulator"), Some(egui::include_image!("../assets/projects/nes.png")));
                     // add_project(ui, "Lan based chatting application", "gg", Some("https://github.com/Saphereye/lan-chat"), None);  
+
+                    if window_width < 972.0 {
+                        ui.heading(RichText::new("Contact Me").size(35.0));
+                        ui.hyperlink_to(RichText::new("Email: adarshdas950@gmail.com",).size(18.0), "mailto:adarshdas950@gmail.com");
+                        ui.add_space(10.0);
+                        ui.hyperlink_to(RichText::new("Phone Number: +91 85278 5966",).size(18.0), "tel:+91852785966");
+                        ui.add_space(10.0);
+                        ui.hyperlink_to(RichText::new("Github",).size(18.0), "https://github.com/Saphereye");
+                        ui.add_space(10.0);
+                        ui.hyperlink_to(RichText::new("Linkedin",).size(18.0), "https://www.linkedin.com/in/adarsh-das-8684ab240/");
+                        ui.add_space(10.0);
+                        ui.hyperlink_to(RichText::new("Résumé",).size(18.0), "https://drive.google.com/file/d/1TnOysGFb8FreWxzyTqyW_RSVO3QrxpFR/view");
+                    }
                 });
+
+                
             })
         });
 
