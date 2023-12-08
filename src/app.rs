@@ -126,54 +126,56 @@ impl eframe::App for Website {
                 work_experience_button = Some(ui.link(RichText::new("- Work Experience, Competetions and Club activities").size(18.0)));
                 personal_projects_button = Some(ui.link(RichText::new("- Hobby Projects").size(18.0)));
                 ui.separator();
-    
-                //
-                // Contact Me
-                //
-                ui.vertical(|ui| {
-                    ui.set_max_width(ui.available_width());
-
-                    ui.heading(RichText::new("Contact Me").size(25.0));
-                    ui.hyperlink_to(RichText::new("Email: adarshdas950@gmail.com",).size(18.0), "mailto:adarshdas950@gmail.com");
-                    ui.add_space(10.0);
-                    ui.hyperlink_to(RichText::new("Phone Number: +91 85278 5966",).size(18.0), "tel:+91852785966");
-                    ui.add_space(10.0);
-                    ui.hyperlink_to(RichText::new("Github",).size(18.0), "https://github.com/Saphereye");
-                    ui.add_space(10.0);
-                    ui.hyperlink_to(RichText::new("Linkedin",).size(18.0), "https://www.linkedin.com/in/adarsh-das-8684ab240/");
-                    ui.add_space(10.0);
-                    ui.hyperlink_to(RichText::new("Résumé",).size(18.0), "https://drive.google.com/file/d/1TnOysGFb8FreWxzyTqyW_RSVO3QrxpFR/view");
-                    ui.add_space(10.0);
-                    ui.separator();
-                    ui.add_space(10.0);
-
-                    ui.heading(RichText::new("Linguistic Proficiency").size(25.0));
-                    ui.label(RichText::new("English (A1)").size(18.0));
-                    ui.label(RichText::new("German (B2)").size(18.0));
-                    ui.label(RichText::new("Hindi (Native)").size(18.0));
-                    ui.add_space(10.0);
-                    ui.separator();                 
-
-                    ui.add_space(10.0);
-                    ui.heading(RichText::new("Misc.").size(25.0));
-                    ui.hyperlink_to(RichText::new("Favorite Fungi: Spongiforma squarepantsii",).size(18.0), "https://en.wikipedia.org/wiki/Spongiforma_squarepantsii");
-                    ui.hyperlink_to(RichText::new("Favorite Insect: Aha ha",).size(18.0), "https://en.wikipedia.org/wiki/Aha_ha");
-                    ui.separator();
-                });
                 
-                ui.with_layout(egui::Layout::bottom_up(egui::Align::LEFT), |ui| {
-                    ui.horizontal(|ui| {
-                        ui.spacing_mut().item_spacing.x = 0.0;
-                        ui.label("Powered by ");
-                        ui.hyperlink_to("egui", "https://github.com/emilk/egui");
-                        ui.label(" and ");
-                        ui.hyperlink_to(
-                            "eframe",
-                            "https://github.com/emilk/egui/tree/master/crates/eframe",
-                        );
-                        ui.label(".");
+                egui::ScrollArea::vertical().show(ui, |ui| {
+                    //
+                    // Contact Me
+                    //
+                    ui.vertical(|ui| {
+                        ui.set_max_width(ui.available_width());
+
+                        ui.heading(RichText::new("Contact Me").size(25.0));
+                        ui.hyperlink_to(RichText::new("Email: adarshdas950@gmail.com",).size(18.0), "mailto:adarshdas950@gmail.com");
+                        ui.add_space(10.0);
+                        ui.hyperlink_to(RichText::new("Phone Number: +91 85278 59660",).size(18.0), "tel:+91852785966");
+                        ui.add_space(10.0);
+                        ui.hyperlink_to(RichText::new("Github",).size(18.0), "https://github.com/Saphereye");
+                        ui.add_space(10.0);
+                        ui.hyperlink_to(RichText::new("Linkedin",).size(18.0), "https://www.linkedin.com/in/adarsh-das-8684ab240/");
+                        ui.add_space(10.0);
+                        ui.hyperlink_to(RichText::new("Résumé",).size(18.0), "https://drive.google.com/file/d/1TnOysGFb8FreWxzyTqyW_RSVO3QrxpFR/view");
+                        ui.add_space(10.0);
+                        ui.separator();
+                        ui.add_space(10.0);
+
+                        ui.heading(RichText::new("Linguistic Proficiency").size(25.0));
+                        ui.label(RichText::new("English (A1)").size(18.0));
+                        ui.label(RichText::new("German (B2)").size(18.0));
+                        ui.label(RichText::new("Hindi (Native)").size(18.0));
+                        ui.add_space(10.0);
+                        ui.separator();                 
+
+                        ui.add_space(10.0);
+                        ui.heading(RichText::new("Misc.").size(25.0));
+                        ui.hyperlink_to(RichText::new("Favorite Fungi: Spongiforma squarepantsii",).size(18.0), "https://en.wikipedia.org/wiki/Spongiforma_squarepantsii");
+                        ui.hyperlink_to(RichText::new("Favorite Insect: Aha ha",).size(18.0), "https://en.wikipedia.org/wiki/Aha_ha");
+                        // ui.separator();
                     });
-                })
+                });
+                    
+                // ui.with_layout(egui::Layout::bottom_up(egui::Align::LEFT), |ui| {
+                //     ui.horizontal(|ui| {
+                //         ui.spacing_mut().item_spacing.x = 0.0;
+                //         ui.label("Powered by ");
+                //         ui.hyperlink_to("egui", "https://github.com/emilk/egui");
+                //         ui.label(" and ");
+                //         ui.hyperlink_to(
+                //             "eframe",
+                //             "https://github.com/emilk/egui/tree/master/crates/eframe",
+                //         );
+                //         ui.label(".");
+                //     });
+                // })
             });
         }
 
@@ -196,7 +198,7 @@ impl eframe::App for Website {
                         ui.label(RichText::new("I am").size(18.0));
                         // pronunciation: [ɑːˈd̪ɐɾ.ɕ/]
                         ui.label(RichText::new("Adarsh Das").size(18.0).underline());
-                        ui.label(RichText::new(", an inquisitive aspiring software developer with an interest in all ﬁelds of computer science ranging from the mathematical foundations to graphics.").size(18.0));
+                        ui.label(RichText::new(", an inquisitive software developer with an interest in all ﬁelds of computer science ranging from the mathematical foundations to graphics.").size(18.0));
                     });
                     ui.label(RichText::new("Furthermore, I am self-motivated, enthusiastic, reliable and a responsible team-spirited person with a strong foundation in ethics.").size(18.0));
                     
@@ -323,7 +325,7 @@ impl eframe::App for Website {
                         ui.heading(RichText::new("Contact Me").size(35.0));
                         ui.hyperlink_to(RichText::new("Email: adarshdas950@gmail.com",).size(18.0), "mailto:adarshdas950@gmail.com");
                         ui.add_space(10.0);
-                        ui.hyperlink_to(RichText::new("Phone Number: +91 85278 5966",).size(18.0), "tel:+91852785966");
+                        ui.hyperlink_to(RichText::new("Phone Number: +91 85278 59660",).size(18.0), "tel:+91852785966");
                         ui.add_space(10.0);
                         ui.hyperlink_to(RichText::new("Github",).size(18.0), "https://github.com/Saphereye");
                         ui.add_space(10.0);
