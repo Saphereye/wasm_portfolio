@@ -137,7 +137,7 @@ impl eframe::App for Website {
                         ui.heading(RichText::new("Contact Me").size(25.0));
                         ui.hyperlink_to(RichText::new("Email: adarshdas950@gmail.com",).size(18.0), "mailto:adarshdas950@gmail.com");
                         ui.add_space(10.0);
-                        ui.hyperlink_to(RichText::new("Phone Number: +91 85278 59660",).size(18.0), "tel:+91852785966");
+                        ui.hyperlink_to(RichText::new("Phone Number: +91 85278 59660",).size(18.0), "tel:+918527859660");
                         ui.add_space(10.0);
                         ui.hyperlink_to(RichText::new("Github",).size(18.0), "https://github.com/Saphereye");
                         ui.add_space(10.0);
@@ -325,7 +325,7 @@ impl eframe::App for Website {
                         ui.heading(RichText::new("Contact Me").size(35.0));
                         ui.hyperlink_to(RichText::new("Email: adarshdas950@gmail.com",).size(18.0), "mailto:adarshdas950@gmail.com");
                         ui.add_space(10.0);
-                        ui.hyperlink_to(RichText::new("Phone Number: +91 85278 59660",).size(18.0), "tel:+91852785966");
+                        ui.hyperlink_to(RichText::new("Phone Number: +91 85278 59660",).size(18.0), "tel:+918527859660");
                         ui.add_space(10.0);
                         ui.hyperlink_to(RichText::new("Github",).size(18.0), "https://github.com/Saphereye");
                         ui.add_space(10.0);
