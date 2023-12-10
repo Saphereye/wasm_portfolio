@@ -12,6 +12,13 @@ use graphing_calculator::*;
 use http_app::*;
 use poll_promise::Promise;
 
+enum TextType {
+    Heading,
+    SubHeading,
+    Paragraph,
+    Project
+}
+
 #[derive(serde::Deserialize, serde::Serialize, PartialEq)]
 enum Window {
     About,
@@ -118,13 +125,13 @@ impl eframe::App for Website {
             egui::SidePanel::left("table_of_contents").show(ctx, |ui| {
                 // ui.heading(format!("{:?}", ui.available_size()));
                 ui.heading(RichText::new("Table of Contents").size(25.0));
-                about_me_button = Some( ui.link(RichText::new("- About Me").size(18.0)));
-                education_button = Some(ui.link(RichText::new("- Education").size(18.0)));
-                strengths_button = Some(ui.link(RichText::new("- Strengths").size(18.0)));
-                coursework_button = Some(ui.link(RichText::new("- Coursework").size(18.0)));
-                research_projects_button = Some(ui.link(RichText::new("- Research Projects").size(18.0)));
-                work_experience_button = Some(ui.link(RichText::new("- Work Experience, Competetions and Club activities").size(18.0)));
-                personal_projects_button = Some(ui.link(RichText::new("- Hobby Projects").size(18.0)));
+                about_me_button = Some( ui.link(add_text(TextType::Paragraph, "- About Me")));
+                education_button = Some(ui.link(add_text(TextType::Paragraph, "- Education")));
+                strengths_button = Some(ui.link(add_text(TextType::Paragraph, "- Strengths")));
+                coursework_button = Some(ui.link(add_text(TextType::Paragraph, "- Coursework")));
+                research_projects_button = Some(ui.link(add_text(TextType::Paragraph, "- Research Projects")));
+                work_experience_button = Some(ui.link(add_text(TextType::Paragraph, "- Work Experience, Competetions and Club activities")));
+                personal_projects_button = Some(ui.link(add_text(TextType::Paragraph, "- Hobby Projects")));
                 ui.separator();
                 
                 egui::ScrollArea::vertical().show(ui, |ui| {
@@ -135,30 +142,25 @@ impl eframe::App for Website {
                         ui.set_max_width(ui.available_width());
 
                         ui.heading(RichText::new("Contact Me").size(25.0));
-                        ui.hyperlink_to(RichText::new("Email: adarshdas950@gmail.com",).size(18.0), "mailto:adarshdas950@gmail.com");
-                        ui.add_space(10.0);
-                        ui.hyperlink_to(RichText::new("Phone Number: +91 85278 59660",).size(18.0), "tel:+918527859660");
-                        ui.add_space(10.0);
-                        ui.hyperlink_to(RichText::new("Github",).size(18.0), "https://github.com/Saphereye");
-                        ui.add_space(10.0);
-                        ui.hyperlink_to(RichText::new("Linkedin",).size(18.0), "https://www.linkedin.com/in/adarsh-das-8684ab240/");
-                        ui.add_space(10.0);
-                        ui.hyperlink_to(RichText::new("Résumé",).size(18.0), "https://drive.google.com/file/d/1TnOysGFb8FreWxzyTqyW_RSVO3QrxpFR/view");
-                        ui.add_space(10.0);
+                        add_custom_hyperlink(ui, add_text(TextType::Paragraph, "Email: adarshdas950@gmail.com"), "mailto:adarshdas950@gmail.com"); ui.add_space(10.0);
+                        add_custom_hyperlink(ui, add_text(TextType::Paragraph, "Phone Number: +91 85278 59660"), "tel:+918527859660"); ui.add_space(10.0);
+                        add_custom_hyperlink(ui, add_text(TextType::Paragraph, "Github"), "https://github.com/Saphereye"); ui.add_space(10.0);
+                        add_custom_hyperlink(ui, add_text(TextType::Paragraph, "Linkedin"), "https://www.linkedin.com/in/adarsh-das-8684ab240/"); ui.add_space(10.0);
+                        add_custom_hyperlink(ui, add_text(TextType::Paragraph, "Résumé"), "https://drive.google.com/file/d/1TnOysGFb8FreWxzyTqyW_RSVO3QrxpFR/view"); ui.add_space(10.0);
                         ui.separator();
                         ui.add_space(10.0);
 
                         ui.heading(RichText::new("Linguistic Proficiency").size(25.0));
-                        ui.label(RichText::new("English (A1)").size(18.0));
-                        ui.label(RichText::new("German (B2)").size(18.0));
-                        ui.label(RichText::new("Hindi (Native)").size(18.0));
+                        ui.label(add_text(TextType::Paragraph, "English (A1)"));
+                        ui.label(add_text(TextType::Paragraph, "German (B2)"));
+                        ui.label(add_text(TextType::Paragraph, "Hindi (Native)"));
                         ui.add_space(10.0);
                         ui.separator();                 
 
                         ui.add_space(10.0);
                         ui.heading(RichText::new("Misc.").size(25.0));
-                        ui.hyperlink_to(RichText::new("Favorite Fungi: Spongiforma squarepantsii",).size(18.0), "https://en.wikipedia.org/wiki/Spongiforma_squarepantsii");
-                        ui.hyperlink_to(RichText::new("Favorite Insect: Aha ha",).size(18.0), "https://en.wikipedia.org/wiki/Aha_ha");
+                        add_custom_hyperlink(ui, add_text(TextType::Paragraph, "Favorite Fungi: Spongiforma squarepantsii"), "https://en.wikipedia.org/wiki/Spongiforma_squarepantsii");
+                        add_custom_hyperlink(ui, add_text(TextType::Paragraph, "Favorite Insect: Aha ha"), "https://en.wikipedia.org/wiki/Aha_ha");
                         // ui.separator();
                     });
                 });
@@ -201,7 +203,7 @@ impl eframe::App for Website {
                         ui.label(RichText::new(", an inquisitive software developer with an interest in all ﬁelds of computer science ranging from the mathematical foundations to graphics.").size(18.0));
                     });
                     ui.label(RichText::new("Furthermore, I am self-motivated, enthusiastic, reliable and a responsible team-spirited person with a strong foundation in ethics.").size(18.0));
-                    
+
                     ui.hyperlink_to("Résumé", "https://drive.google.com/file/d/1TnOysGFb8FreWxzyTqyW_RSVO3QrxpFR/view");
 
                     ui.separator();
@@ -230,17 +232,17 @@ impl eframe::App for Website {
                         }
                     }
                     ui.horizontal_wrapped(|ui| {
-                        let _ = ui.button(RichText::new("Python").size(18.0));
-                        let _ = ui.button(RichText::new("C++").size(18.0));
-                        let _ = ui.button(RichText::new("C").size(18.0));
-                        let _ = ui.button(RichText::new("Git").size(18.0));
-                        let _ = ui.button(RichText::new("Godot").size(18.0));
-                        let _ = ui.button(RichText::new("OpenGL").size(18.0));
-                        let _ = ui.button(RichText::new("Java").size(18.0));
-                        let _ = ui.button(RichText::new("Rust").size(18.0));
-                        let _ = ui.button(RichText::new("Sklearn").size(18.0));
-                        let _ = ui.button(RichText::new("Pandas").size(18.0));
-                        let _ = ui.button(RichText::new("Django").size(18.0));
+                        let _ = ui.button(add_text(TextType::Paragraph, "Python"));
+                        let _ = ui.button(add_text(TextType::Paragraph, "C++"));
+                        let _ = ui.button(add_text(TextType::Paragraph, "C"));
+                        let _ = ui.button(add_text(TextType::Paragraph, "Git"));
+                        let _ = ui.button(add_text(TextType::Paragraph, "Godot"));
+                        let _ = ui.button(add_text(TextType::Paragraph, "OpenGL"));
+                        let _ = ui.button(add_text(TextType::Paragraph, "Java"));
+                        let _ = ui.button(add_text(TextType::Paragraph, "Rust"));
+                        let _ = ui.button(add_text(TextType::Paragraph, "Sklearn"));
+                        let _ = ui.button(add_text(TextType::Paragraph, "Pandas"));
+                        let _ = ui.button(add_text(TextType::Paragraph, "Django"));
                     });
                     ui.add_space(10.0);
                     ui.separator();
@@ -253,26 +255,26 @@ impl eframe::App for Website {
                     }
                     ui.horizontal_wrapped(|ui| {
                         ui.set_max_width(ui.available_width());
-                        let _ = ui.button(RichText::new("Data Structures and Algorithms").size(18.0));
-                        let _ = ui.button(RichText::new("Database Systems").size(18.0));
-                        let _ = ui.button(RichText::new("Object Oriented Programming").size(18.0));
-                        let _ = ui.button(RichText::new("Operating Systems").size(18.0));
-                        let _ = ui.button(RichText::new("Computer Architecture").size(18.0));
-                        let _ = ui.button(RichText::new("Deep Learning").size(18.0));
-                        let _ = ui.button(RichText::new("Machine Learning").size(18.0));
-                        let _ = ui.button(RichText::new("Artificial Intelligence").size(18.0));
-                        let _ = ui.button(RichText::new("Image Processing").size(18.0));
-                        let _ = ui.button(RichText::new("Theory of Computation").size(18.0));
-                        let _ = ui.button(RichText::new("Principles of programming languages").size(18.0));
-                        let _ = ui.button(RichText::new("Discrete Structure in Computer Science").size(18.0));
-                        let _ = ui.button(RichText::new("Logic in Computer Science").size(18.0));
-                        let _ = ui.button(RichText::new("Digital Design").size(18.0));
-                        let _ = ui.button(RichText::new("Computer Programming").size(18.0));
-                        let _ = ui.button(RichText::new("Probability and Statistics").size(18.0));
-                        let _ = ui.button(RichText::new("Linear Algebra").size(18.0));
-                        let _ = ui.button(RichText::new("Differential Calculus").size(18.0));
-                        let _ = ui.button(RichText::new("Principles of Management").size(18.0));
-                        let _ = ui.button(RichText::new("Technical Report Writing").size(18.0));
+                        let _ = ui.button(add_text(TextType::Paragraph, "Data Structures and Algorithms"));
+                        let _ = ui.button(add_text(TextType::Paragraph, "Database Systems"));
+                        let _ = ui.button(add_text(TextType::Paragraph, "Object Oriented Programming"));
+                        let _ = ui.button(add_text(TextType::Paragraph, "Operating Systems"));
+                        let _ = ui.button(add_text(TextType::Paragraph, "Computer Architecture"));
+                        let _ = ui.button(add_text(TextType::Paragraph, "Deep Learning"));
+                        let _ = ui.button(add_text(TextType::Paragraph, "Machine Learning"));
+                        let _ = ui.button(add_text(TextType::Paragraph, "Artificial Intelligence"));
+                        let _ = ui.button(add_text(TextType::Paragraph, "Image Processing"));
+                        let _ = ui.button(add_text(TextType::Paragraph, "Theory of Computation"));
+                        let _ = ui.button(add_text(TextType::Paragraph, "Principles of programming languages"));
+                        let _ = ui.button(add_text(TextType::Paragraph, "Discrete Structure in Computer Science"));
+                        let _ = ui.button(add_text(TextType::Paragraph, "Logic in Computer Science"));
+                        let _ = ui.button(add_text(TextType::Paragraph, "Digital Design"));
+                        let _ = ui.button(add_text(TextType::Paragraph, "Computer Programming"));
+                        let _ = ui.button(add_text(TextType::Paragraph, "Probability and Statistics"));
+                        let _ = ui.button(add_text(TextType::Paragraph, "Linear Algebra"));
+                        let _ = ui.button(add_text(TextType::Paragraph, "Differential Calculus"));
+                        let _ = ui.button(add_text(TextType::Paragraph, "Principles of Management"));
+                        let _ = ui.button(add_text(TextType::Paragraph, "Technical Report Writing"));
 
                     });
                     ui.add_space(10.0);
@@ -323,15 +325,15 @@ impl eframe::App for Website {
 
                     if window_width < 972.0 {
                         ui.heading(RichText::new("Contact Me").size(35.0));
-                        ui.hyperlink_to(RichText::new("Email: adarshdas950@gmail.com",).size(18.0), "mailto:adarshdas950@gmail.com");
+                        add_custom_hyperlink(ui, add_text(TextType::Paragraph, "Email: adarshdas950@gmail.com"), "mailto:adarshdas950@gmail.com");
                         ui.add_space(10.0);
-                        ui.hyperlink_to(RichText::new("Phone Number: +91 85278 59660",).size(18.0), "tel:+918527859660");
+                        add_custom_hyperlink(ui, add_text(TextType::Paragraph, "Phone Number: +91 85278 59660"), "tel:+918527859660");
                         ui.add_space(10.0);
-                        ui.hyperlink_to(RichText::new("Github",).size(18.0), "https://github.com/Saphereye");
+                        add_custom_hyperlink(ui, add_text(TextType::Paragraph, "Github"), "https://github.com/Saphereye");
                         ui.add_space(10.0);
-                        ui.hyperlink_to(RichText::new("Linkedin",).size(18.0), "https://www.linkedin.com/in/adarsh-das-8684ab240/");
+                        add_custom_hyperlink(ui, add_text(TextType::Paragraph, "Linkedin"), "https://www.linkedin.com/in/adarsh-das-8684ab240/");
                         ui.add_space(10.0);
-                        ui.hyperlink_to(RichText::new("Résumé",).size(18.0), "https://drive.google.com/file/d/1TnOysGFb8FreWxzyTqyW_RSVO3QrxpFR/view");
+                        add_custom_hyperlink(ui, add_text(TextType::Paragraph, "Résumé"), "https://drive.google.com/file/d/1TnOysGFb8FreWxzyTqyW_RSVO3QrxpFR/view");
                     }
                 });
 
@@ -340,6 +342,27 @@ impl eframe::App for Website {
         });
 
     }
+}
+
+fn add_text(text_type: TextType, text: &str) -> RichText {
+    match text_type {
+        TextType::Heading => {
+            RichText::new(text).size(35.0)
+        }
+        TextType::SubHeading => {
+            RichText::new(text).size(25.0)
+        }
+        TextType::Paragraph => {
+            RichText::new(text).size(18.0)
+        }
+        TextType::Project => {
+            RichText::new(text).size(30.0)
+        }
+    }
+}
+
+fn add_custom_hyperlink(ui: &mut Ui, text: RichText, url: &str) -> Response {
+    ui.add(Hyperlink::from_label_and_url(text, url).open_in_new_tab(true))
 }
 
 fn add_project(
@@ -352,12 +375,12 @@ fn add_project(
     // Image display on terminal
     ui.add_space(10.0);
     if let Some(source_code_link) = source_code_link {
-        ui.hyperlink_to(RichText::new(name).size(30.0), source_code_link);
+        ui.hyperlink_to(add_text(TextType::Project, name), source_code_link);
     } else {
-        ui.heading(RichText::new(name).size(30.0));
+        ui.heading(add_text(TextType::Project, name));
     }
     ui.add_space(10.0);
-    ui.label(RichText::new(description).size(18.0));
+    ui.label(add_text(TextType::Paragraph, description));
     ui.add_space(10.0);
     if let Some(image) = image {
         ui.add(
