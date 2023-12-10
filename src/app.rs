@@ -1,22 +1,8 @@
-use std::{default, fmt::format, task::Poll};
-
-use egui::{*, text::LayoutJob};
-use egui_extras::{Column, TableBuilder};
-
-mod expense_calculator;
-mod graphing_calculator;
-mod http_app;
-
-use expense_calculator::*;
-use graphing_calculator::*;
-use http_app::*;
-use poll_promise::Promise;
-
 enum TextType {
     Heading,
     SubHeading,
     Paragraph,
-    Project
+    Project,
 }
 
 #[derive(serde::Deserialize, serde::Serialize, PartialEq)]
@@ -36,17 +22,7 @@ enum Window {
 pub struct Website {
     // Example stuff:
     label: String,
-
-    #[serde(skip)] // This how you opt-out of serialization of a field
-    value: f32,
-
-    current_window: Window,
-
-    graphing_calculator_app: GraphingCalculatorApp,
-
     main_menu_size: f32,
-
-    expense_calculator_app: ExpenseCalculatorApp,
     // #[serde(skip)]
     // http_app: HttpApp,
 }
@@ -55,11 +31,7 @@ impl Default for Website {
     fn default() -> Self {
         Self {
             label: "Adarsh Das".to_owned(),
-            value: 0.0,
-            current_window: Window::About,
             main_menu_size: 17.0,
-            graphing_calculator_app: GraphingCalculatorApp::default(),
-            expense_calculator_app: ExpenseCalculatorApp::default(),
             // http_app: HttpApp::default(),
         }
     }
@@ -90,26 +62,31 @@ impl eframe::App for Website {
     /// Called each time the UI needs repainting, which may be many times per second.
     fn update(&mut self, ctx: &egui::Context, _frame: &mut eframe::Frame) {
         egui_extras::install_image_loaders(ctx);
-
         let mut window_width = 0.0;
 
         egui::TopBottomPanel::top("quote").show(ctx, |ui| {
             window_width = ui.available_width();
             ui.set_width(277.4);
             ui.set_min_width(277.4);
-            // ui.heading(format!("{:?}", ui.available_size()));
             ui.horizontal(|ui| {
                 egui::widgets::global_dark_light_mode_switch(ui);
                 ui.vertical_centered(|ui| {
-                    // ui.set_max_width(ui.available_height());
-                    ui.heading(RichText::new("Reden ist Silber, Schweigen ist Gold").size(35.0).italics());
-                    ui.heading(RichText::new("- Büchmann, Georg (1895). Geflügelte Worte").size(18.0).italics());
+                    ui.heading(
+                        add_text(TextType::Heading, "Reden ist Silber, Schweigen ist Gold")
+                            .italics(),
+                    );
+                    ui.heading(
+                        add_text(
+                            TextType::Paragraph,
+                            "- Büchmann, Georg (1895). Geflügelte Worte",
+                        )
+                        .italics(),
+                    );
                 });
                 ui.add_space(10.0);
-            }); 
+            });
         });
-        
-        
+
         let mut about_me_button: Option<egui::Response> = None;
         let mut education_button: Option<egui::Response> = None;
         let mut strengths_button: Option<egui::Response> = None;
@@ -118,13 +95,10 @@ impl eframe::App for Website {
         let mut work_experience_button: Option<egui::Response> = None;
         let mut personal_projects_button: Option<egui::Response> = None;
 
-        
-        // frame.info().window_info.size.x >= 500.0
-        
         if window_width > 972.0 {
             egui::SidePanel::left("table_of_contents").show(ctx, |ui| {
                 // ui.heading(format!("{:?}", ui.available_size()));
-                ui.heading(RichText::new("Table of Contents").size(25.0));
+                ui.heading(add_text(TextType::SubHeading, "Table of Contents"));
                 about_me_button = Some( ui.link(add_text(TextType::Paragraph, "- About Me")));
                 education_button = Some(ui.link(add_text(TextType::Paragraph, "- Education")));
                 strengths_button = Some(ui.link(add_text(TextType::Paragraph, "- Strengths")));
@@ -141,7 +115,7 @@ impl eframe::App for Website {
                     ui.vertical(|ui| {
                         ui.set_max_width(ui.available_width());
 
-                        ui.heading(RichText::new("Contact Me").size(25.0));
+                        ui.heading(add_text(TextType::SubHeading, "Contact Me"));
                         add_custom_hyperlink(ui, add_text(TextType::Paragraph, "Email: adarshdas950@gmail.com"), "mailto:adarshdas950@gmail.com"); ui.add_space(10.0);
                         add_custom_hyperlink(ui, add_text(TextType::Paragraph, "Phone Number: +91 85278 59660"), "tel:+918527859660"); ui.add_space(10.0);
                         add_custom_hyperlink(ui, add_text(TextType::Paragraph, "Github"), "https://github.com/Saphereye"); ui.add_space(10.0);
@@ -150,7 +124,7 @@ impl eframe::App for Website {
                         ui.separator();
                         ui.add_space(10.0);
 
-                        ui.heading(RichText::new("Linguistic Proficiency").size(25.0));
+                        ui.heading(add_text(TextType::SubHeading, "Linguistic Proficiency"));
                         ui.label(add_text(TextType::Paragraph, "English (A1)"));
                         ui.label(add_text(TextType::Paragraph, "German (B2)"));
                         ui.label(add_text(TextType::Paragraph, "Hindi (Native)"));
@@ -158,30 +132,16 @@ impl eframe::App for Website {
                         ui.separator();                 
 
                         ui.add_space(10.0);
-                        ui.heading(RichText::new("Misc.").size(25.0));
+                        ui.heading(add_text(TextType::SubHeading, "Misc."));
                         add_custom_hyperlink(ui, add_text(TextType::Paragraph, "Favorite Fungi: Spongiforma squarepantsii"), "https://en.wikipedia.org/wiki/Spongiforma_squarepantsii");
                         add_custom_hyperlink(ui, add_text(TextType::Paragraph, "Favorite Insect: Aha ha"), "https://en.wikipedia.org/wiki/Aha_ha");
-                        // ui.separator();
                     });
                 });
-                    
-                // ui.with_layout(egui::Layout::bottom_up(egui::Align::LEFT), |ui| {
-                //     ui.horizontal(|ui| {
-                //         ui.spacing_mut().item_spacing.x = 0.0;
-                //         ui.label("Powered by ");
-                //         ui.hyperlink_to("egui", "https://github.com/emilk/egui");
-                //         ui.label(" and ");
-                //         ui.hyperlink_to(
-                //             "eframe",
-                //             "https://github.com/emilk/egui/tree/master/crates/eframe",
-                //         );
-                //         ui.label(".");
-                //     });
-                // })
             });
         }
 
         egui::CentralPanel::default().show(ctx, |ui| {
+            egui_extras::install_image_loaders(ctx);
             egui::ScrollArea::vertical().show(ui, |ui| {
                 //
                 // About Me
@@ -189,46 +149,46 @@ impl eframe::App for Website {
                 ui.vertical(|ui| {
                     // ui.set_max_width(ui.available_width() * 0.5);
 
-                    let response = ui.heading(RichText::new("About Me").size(35.0));
+                    let response = ui.heading(add_text(TextType::Heading, "About Me"));
                     if let Some(about_me_button) = about_me_button {
                         if about_me_button.clicked() {
-                            response.scroll_to_me(Some(Align::Min));
+                            response.scroll_to_me(Some(egui::Align::Min));
                         }
                     }
                     ui.horizontal_wrapped(|ui| {
                         // ui.set_max_width(ui.available_width() * 0.5);
-                        ui.label(RichText::new("I am").size(18.0));
+                        ui.label(add_text(TextType::Paragraph, "Hi, I am"));
                         // pronunciation: [ɑːˈd̪ɐɾ.ɕ/]
-                        ui.label(RichText::new("Adarsh Das").size(18.0).underline());
-                        ui.label(RichText::new(", an inquisitive software developer with an interest in all ﬁelds of computer science ranging from the mathematical foundations to graphics.").size(18.0));
+                        ui.label(add_text(TextType::Paragraph, "Adarsh Das").underline());
+                        ui.label(add_text(TextType::Paragraph, ", a third year undergraduate student at BITS Pilani, Hyderabad Campus. I am a passionate programmer and a tech enthusiast. I am also a member of the"));
                     });
-                    ui.label(RichText::new("Furthermore, I am self-motivated, enthusiastic, reliable and a responsible team-spirited person with a strong foundation in ethics.").size(18.0));
+                    ui.label(add_text(TextType::Paragraph, "Furthermore, I am self-motivated, enthusiastic, reliable and a responsible team-spirited person with a strong foundation in ethics."));
 
-                    ui.hyperlink_to("Résumé", "https://drive.google.com/file/d/1TnOysGFb8FreWxzyTqyW_RSVO3QrxpFR/view");
+                    add_custom_hyperlink(ui, add_text(TextType::Paragraph, "Résumé"), "https://drive.google.com/file/d/1TnOysGFb8FreWxzyTqyW_RSVO3QrxpFR/view");
 
                     ui.separator();
                     ui.add_space(10.0);
 
-                    let response = ui.heading(RichText::new("Education").size(35.0));
+                    let response = ui.heading(add_text(TextType::Heading, "Education"));
                     if let Some(education_button) = education_button {
                         if education_button.clicked() {
-                            response.scroll_to_me(Some(Align::Min));
+                            response.scroll_to_me(Some(egui::Align::Min));
                         }
                     }
                     ui.horizontal_wrapped(|ui| {
-                        ui.label(RichText::new("Currently pursuing my",).size(18.0),);
-                        ui.label(RichText::new("B.E. Hons in Computer Science and Minor in Data Science",).size(18.0).underline(),);
-                        ui.label(RichText::new("from",).size(18.0),);
-                        ui.label(RichText::new("Birla Institute of Technology and Science, Hyderabad Campus.",).size(18.0).underline(),);
+                        ui.label(add_text(TextType::Paragraph, "Currently pursuing my"));
+                        ui.label(add_text(TextType::Paragraph, "B.E. Hons in Computer Science and Minor in Data Science").underline(),);
+                        ui.label(add_text(TextType::Paragraph, "from"));
+                        ui.label(add_text(TextType::Paragraph, "Birla Institute of Technology and Science, Hyderabad Campus.").underline(),);
                     });
-                    ui.label(RichText::new("I am currently in my third year of study.").size(18.0));
+                    ui.label(add_text(TextType::Paragraph, "I am currently in my third year of study."));
                     ui.add_space(10.0);
                     ui.separator();
 
-                    let response = ui.heading(RichText::new("Strengths").size(35.0));
+                    let response = ui.heading(add_text(TextType::Heading, "Strengths"));
                     if let Some(strengths_button) = strengths_button {
                         if strengths_button.clicked() {
-                            response.scroll_to_me(Some(Align::Min));
+                            response.scroll_to_me(Some(egui::Align::Min));
                         }
                     }
                     ui.horizontal_wrapped(|ui| {
@@ -247,10 +207,10 @@ impl eframe::App for Website {
                     ui.add_space(10.0);
                     ui.separator();
 
-                    let response = ui.heading(RichText::new("Coursework").size(35.0));
+                    let response = ui.heading(add_text(TextType::Heading, "Coursework"));
                     if let Some(coursework_button) = coursework_button {
                         if coursework_button.clicked() {
-                            response.scroll_to_me(Some(Align::Min));
+                            response.scroll_to_me(Some(egui::Align::Min));
                         }
                     }
                     ui.horizontal_wrapped(|ui| {
@@ -283,10 +243,10 @@ impl eframe::App for Website {
                     //
                     // Projects
                     //
-                    let response = ui.heading(RichText::new("Research Projects").size(35.0));
+                    let response = ui.heading(add_text(TextType::Heading, "Research Projects"));
                     if let Some(research_projects_button) = research_projects_button {
                         if research_projects_button.clicked() {
-                            response.scroll_to_me(Some(Align::Min));
+                            response.scroll_to_me(Some(egui::Align::Min));
                         }
                     }
                     add_project(ui, "Chess AI comparative analysis", "Aimed to explore search algorithms to create a novel chess engine. We use python3.10 programming language and chess module as an interace for handling the board. Furthermore chessboard library was used for gui display.", Some("https://github.com/Saphereye/ChessAI"), Some(egui::include_image!("../assets/projects/chess.png")));
@@ -294,10 +254,10 @@ impl eframe::App for Website {
                     add_project(ui, "Pneumonia diagnosis using chest X-ray", "The project leveraged vision transformers architecture for pneumonia diagnosis. The project also included implementing methods for improving upon the research paper on which it was implemented", None, Some(egui::include_image!("../assets/projects/dl.png")));
                         
                     
-                    let response = ui.heading(RichText::new("Work Experience, Competetions and Club activities").size(35.0));
+                    let response = ui.heading(add_text(TextType::Heading, "Work Experience, Competetions and Club activities"));
                     if let Some(work_experience_button) = work_experience_button {
                         if work_experience_button.clicked() {
-                            response.scroll_to_me(Some(Align::Min));
+                            response.scroll_to_me(Some(egui::Align::Min));
                         }
                     }
                     add_project(ui, "BC6 data analysis", "This was a project for my research internship at NCPOR, Goa. The project was made using Django. It supports a step by step research submission portal and features such as email verification for proposal acceptance. It also includes a page for visualizing BC6 carbon data.", Some("https://github.com/Saphereye/ncpor-portal-ps2"), Some(egui::include_image!("../assets/projects/data.png")));
@@ -305,10 +265,10 @@ impl eframe::App for Website {
                     add_project(ui, "Article: Free Software Movement and its Importance in the Modern World", "In today’s digital world, every aspect of our lives is intertwined with computers. A “computer” will play a considerable part in official work or leisure activities. With such a significant dependence on this technology, the idea of not having control over what we use is absurd. This is, sadly, the current situation with proprietary software. This article explores this problem in detail", Some("https://csabitsh.wordpress.com/2022/10/15/free-software-movement-and-its-importance-in-the-modern-world/"), Some(egui::include_image!("../assets/projects/fsm.webp")));
                     add_project(ui, "Article: A Brief History of Computer Graphics", "Millions of people watch movies every year, marveling at the impeccable CGI (Computer-generated imagery). According to some studies, teens use their phones for an average of about 8 hours a week, surfing social media and popular websites like YouTube. Knowingly or unknowingly, computer graphics is inherent everywhere around us. Consumers often overlook how much computer graphics is part of their lives, from bringing their favorite characters to life to providing realistic simulations. This article explores this topic in detail", Some("https://csabitsh.wordpress.com/a-brief-history-of-computer-graphics/"), Some(egui::include_image!("../assets/projects/graphics2.jpg")));
 
-                    let response = ui.heading(RichText::new("Hobby Projects").size(35.0));
+                    let response = ui.heading(add_text(TextType::Heading, "Hobby Projects"));
                     if let Some(personal_projects_button) = personal_projects_button {
                         if personal_projects_button.clicked() {
-                            response.scroll_to_me(Some(Align::Min));
+                            response.scroll_to_me(Some(egui::Align::Min));
                         }
                     }
                     add_project(ui, "Image display on terminal", "This program addresses the challenge of displaying images in a terminal, which lacks the ability to render small pixels. It achieves this by pixelating the image and leveraging the terminal's color coding capabilities to provide a more accurate representation", Some("https://github.com/Saphereye/image-to-terminal"), Some(egui::include_image!("../assets/projects/imgterm.png")));
@@ -324,7 +284,7 @@ impl eframe::App for Website {
                     // add_project(ui, "Lan based chatting application", "gg", Some("https://github.com/Saphereye/lan-chat"), None);  
 
                     if window_width < 972.0 {
-                        ui.heading(RichText::new("Contact Me").size(35.0));
+                        ui.heading(add_text(TextType::Heading, "Contact Me"));
                         add_custom_hyperlink(ui, add_text(TextType::Paragraph, "Email: adarshdas950@gmail.com"), "mailto:adarshdas950@gmail.com");
                         ui.add_space(10.0);
                         add_custom_hyperlink(ui, add_text(TextType::Paragraph, "Phone Number: +91 85278 59660"), "tel:+918527859660");
@@ -340,37 +300,28 @@ impl eframe::App for Website {
                 
             })
         });
-
     }
 }
 
-fn add_text(text_type: TextType, text: &str) -> RichText {
+fn add_text(text_type: TextType, text: &str) -> egui::RichText {
     match text_type {
-        TextType::Heading => {
-            RichText::new(text).size(35.0)
-        }
-        TextType::SubHeading => {
-            RichText::new(text).size(25.0)
-        }
-        TextType::Paragraph => {
-            RichText::new(text).size(18.0)
-        }
-        TextType::Project => {
-            RichText::new(text).size(30.0)
-        }
+        TextType::Heading => egui::RichText::new(text).size(35.0),
+        TextType::SubHeading => egui::RichText::new(text).size(25.0),
+        TextType::Paragraph => egui::RichText::new(text).size(20.0),
+        TextType::Project => egui::RichText::new(text).size(30.0),
     }
 }
 
-fn add_custom_hyperlink(ui: &mut Ui, text: RichText, url: &str) -> Response {
-    ui.add(Hyperlink::from_label_and_url(text, url).open_in_new_tab(true))
+fn add_custom_hyperlink(ui: &mut egui::Ui, text: egui::RichText, url: &str) -> egui::Response {
+    ui.add(egui::Hyperlink::from_label_and_url(text, url).open_in_new_tab(true))
 }
 
 fn add_project(
-    ui: &mut Ui,
+    ui: &mut egui::Ui,
     name: &str,
     description: &str,
     source_code_link: Option<&str>,
-    image: Option<ImageSource<'_>>,
+    image: Option<egui::ImageSource<'_>>,
 ) {
     // Image display on terminal
     ui.add_space(10.0);
@@ -383,15 +334,11 @@ fn add_project(
     ui.label(add_text(TextType::Paragraph, description));
     ui.add_space(10.0);
     if let Some(image) = image {
-        ui.add(
-            egui::Image::new(image)
-                .fit_to_exact_size(Vec2 { x: ui.available_width(), y: 500.0 })
-        );
+        ui.add(egui::Image::new(image).fit_to_exact_size(egui::Vec2 {
+            x: ui.available_width(),
+            y: 500.0,
+        }));
     }
     ui.add_space(10.0);
-    // if let Some(source_code_link) = source_code_link {
-    //     ui.hyperlink_to("Source Code", source_code_link);
-    // }
-    // ui.add_space(10.0);
     ui.separator();
 }

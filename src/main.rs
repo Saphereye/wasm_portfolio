@@ -13,7 +13,7 @@ fn main() -> eframe::Result<()> {
     };
 
     eframe::run_native(
-        "eframe template",
+        "Adarsh Das",
         native_options,
         Box::new(|cc| Box::new(adarsh_das::Website::new(cc))),
     )
