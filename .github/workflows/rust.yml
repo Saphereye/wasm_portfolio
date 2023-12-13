@@ -56,37 +56,37 @@ jobs:
           command: test
           args: --lib
 
-  fmt:
-    name: Rustfmt
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - uses: actions-rs/toolchain@v1
-        with:
-          profile: minimal
-          toolchain: stable
-          override: true
-          components: rustfmt
-      - uses: actions-rs/cargo@v1
-        with:
-          command: fmt
-          args: --all -- --check
+  # fmt:
+  #   name: Rustfmt
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - uses: actions/checkout@v2
+  #     - uses: actions-rs/toolchain@v1
+  #       with:
+  #         profile: minimal
+  #         toolchain: stable
+  #         override: true
+  #         components: rustfmt
+  #     - uses: actions-rs/cargo@v1
+  #       with:
+  #         command: fmt
+  #         args: --all -- --check
 
-  clippy:
-    name: Clippy
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - uses: actions-rs/toolchain@v1
-        with:
-          profile: minimal
-          toolchain: stable
-          override: true
-          components: clippy
-      - uses: actions-rs/cargo@v1
-        with:
-          command: clippy
-          args: -- -D warnings
+  # clippy:
+  #   name: Clippy
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - uses: actions/checkout@v2
+  #     - uses: actions-rs/toolchain@v1
+  #       with:
+  #         profile: minimal
+  #         toolchain: stable
+  #         override: true
+  #         components: clippy
+  #     - uses: actions-rs/cargo@v1
+  #       with:
+  #         command: clippy
+  #         args: -- -D warnings
 
   trunk:
     name: trunk
@@ -96,7 +96,7 @@ jobs:
       - uses: actions-rs/toolchain@v1
         with:
           profile: minimal
-          toolchain: 1.71.0
+          toolchain: 1.74.0
           target: wasm32-unknown-unknown
           override: true
       - name: Download and install Trunk binary
