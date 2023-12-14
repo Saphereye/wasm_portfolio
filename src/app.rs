@@ -120,7 +120,7 @@ impl eframe::App for Website {
                         add_custom_hyperlink(ui, add_text(TextType::Paragraph, "Phone Number: +91 85278 59660"), "tel:+918527859660"); ui.add_space(10.0);
                         add_custom_hyperlink(ui, add_text(TextType::Paragraph, "Github"), "https://github.com/Saphereye"); ui.add_space(10.0);
                         add_custom_hyperlink(ui, add_text(TextType::Paragraph, "Linkedin"), "https://www.linkedin.com/in/adarsh-das-8684ab240/"); ui.add_space(10.0);
-                        add_custom_hyperlink(ui, add_text(TextType::Paragraph, "Résumé"), "https://drive.google.com/file/d/1TnOysGFb8FreWxzyTqyW_RSVO3QrxpFR/view"); ui.add_space(10.0);
+                        add_custom_hyperlink(ui, add_text(TextType::Paragraph, "Résumé"), "https://drive.google.com/file/d/1MtJ129Ipuvl9u7SHRu3e2Ug_oekiMDBY/view?usp=sharing");
                         ui.separator();
                         ui.add_space(10.0);
 
@@ -164,7 +164,7 @@ impl eframe::App for Website {
                     });
                     ui.label(add_text(TextType::Paragraph, "Furthermore, I am self-motivated, enthusiastic, reliable and a responsible team-spirited person with a strong foundation in ethics."));
 
-                    add_custom_hyperlink(ui, add_text(TextType::Paragraph, "Résumé"), "https://drive.google.com/file/d/1TnOysGFb8FreWxzyTqyW_RSVO3QrxpFR/view");
+                    add_custom_hyperlink(ui, add_text(TextType::Paragraph, "Résumé"), "https://drive.google.com/file/d/1MtJ129Ipuvl9u7SHRu3e2Ug_oekiMDBY/view?usp=sharing");
 
                     ui.separator();
                     ui.add_space(10.0);
@@ -292,7 +292,7 @@ impl eframe::App for Website {
                         ui.add_space(10.0);
                         add_custom_hyperlink(ui, add_text(TextType::Paragraph, "Linkedin"), "https://www.linkedin.com/in/adarsh-das-8684ab240/");
                         ui.add_space(10.0);
-                        add_custom_hyperlink(ui, add_text(TextType::Paragraph, "Résumé"), "https://drive.google.com/file/d/1TnOysGFb8FreWxzyTqyW_RSVO3QrxpFR/view");
+                        add_custom_hyperlink(ui, add_text(TextType::Paragraph, "Résumé"), "https://drive.google.com/file/d/1MtJ129Ipuvl9u7SHRu3e2Ug_oekiMDBY/view?usp=sharing");
                     }
                 });
             })
