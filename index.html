@@ -50,7 +50,7 @@
             body {
                 /* Dark mode background color for what is not covered by the egui canvas,
                 or where the egui canvas is translucent. */
-                background: #404040;
+                background: #1b1b1b;
             }
         }
 
@@ -97,6 +97,7 @@
     <canvas id="the_canvas_id"></canvas>
 
     <!-- the loading spinner will be removed in main.rs -->
+    
     <div class="centered" id="loading_text">
         <p style="font-size:32px"></p>
     </div>
@@ -112,7 +113,7 @@
             "The anticipation of a loading screen fills you with determination", // Undertale
             "Bonfire Lit", // Dark Souls
             "Loading... Loading never changes", // Fallout
-            "Any victory against bugs is always temporary", // Hollow Knight
+            "No bug too great", // Hollow Knight
             "Loading is temporary, but bugs are eternal", // Doom Eternal
             "All we had to do was follow the damn url, CJ!", // GTA
             "The loading screen Mason, what does it mean?", // Black Ops
@@ -122,7 +123,7 @@
         var randomQuote = quotes[Math.floor(Math.random() * quotes.length)];
     
         // Set the text content of the paragraph to the random quote
-        document.querySelector('#loading_text p').innerHTML = randomQuote;
+        document.querySelector('#loading_text p').innerHTML = "<p style='font-size:40px'>Loading...\n</p><i>" + randomQuote + "</i>";
     </script>
 
     <!--Register Service Worker. this will cache the wasm / js scripts for offline use (for PWA functionality). -->
