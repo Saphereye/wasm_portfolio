@@ -144,11 +144,10 @@ impl eframe::App for Website {
             egui_extras::install_image_loaders(ctx);
             egui::ScrollArea::vertical().show(ui, |ui| {
                 ui.vertical(|ui| {
-                    // ui.set_max_width(ui.available_width() * 0.5);
-                    
                     //
                     // About Me
                     //
+                    // ui.set_max_width(ui.available_width() * 0.5);
                     let response = ui.heading(add_text(TextType::Heading, "About Me"));
                     if let Some(about_me_button) = about_me_button {
                         if about_me_button.clicked() {
@@ -168,7 +167,6 @@ impl eframe::App for Website {
 
                     ui.separator();
                     ui.add_space(10.0);
-                    
                     //
                     // Education
                     //
@@ -261,7 +259,6 @@ impl eframe::App for Website {
                     add_project(ui, "Chess AI comparative analysis", "Aimed to explore search algorithms to create a novel chess engine. We use python3.10 programming language and chess module as an interace for handling the board. Furthermore chessboard library was used for gui display.", Some("https://github.com/Saphereye/ChessAI"), Some(egui::include_image!("../assets/projects/chess.png")));
                     add_project(ui, "Malaria Cell classification using state-of-the-art Vision Tranformer", "The project utilized vision transformer trained on various processed images of the training data such as green channel, green channle canny filx`tered and klahe filter. The individual models where then combined using a ensemble methods. The validation set gave 99.7% accuracy and the testing accuracy was ~94%", None, Some(egui::include_image!("../assets/projects/ip.png")));
                     add_project(ui, "Pneumonia diagnosis using chest X-ray", "The project leveraged vision transformers architecture for pneumonia diagnosis. The project also included implementing methods for improving upon the research paper on which it was implemented", None, Some(egui::include_image!("../assets/projects/dl.png")));
-                    
                     //
                     // Work Experience, Competetions and Club activities
                     //
