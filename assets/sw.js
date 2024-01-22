@@ -1,4 +1,4 @@
-var cacheName = 'egui-template-pwa';
+var cacheName = 'adarsh-das-portfolio';
 var filesToCache = [
   './',
   './index.html',
