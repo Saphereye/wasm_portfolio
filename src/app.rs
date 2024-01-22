@@ -299,6 +299,7 @@ impl eframe::App for Website {
                     ));
                     add_project(ui, "Multipurpose Telegram Bot", "A personal telegram bot implemeted using teloxide library in rust. Supports a wide variety of toy features such as reporting the weather and sending cat pics. Sends a greeting at 8am everyday and can also jot down todos for every user.", Some("https://github.com/Saphereye/herr-jr"), Some(egui::include_image!("../assets/projects/herrjr.png")));
                     add_project(ui, "NES Emulator", "Implemented a an NES emulator in rust. Supports screen switching and input mapping.", Some("https://github.com/Saphereye/nes_emulator"), Some(egui::include_image!("../assets/projects/nes.png")));
+                    add_project(ui, "Chip-8 Emulator", "Complete implementation of a Chip-8 (fantasy video game console) emulator using Rust.", Some("https://github.com/Saphereye/chip-8-emulator"), Some(egui::include_image!("../assets/projects/chip8.png")));
                     // add_project(ui, "Lan based chatting application", "", Some("https://github.com/Saphereye/lan-chat"), None);  
 
                     if window_width < 972.0 {
