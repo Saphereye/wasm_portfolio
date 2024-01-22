@@ -232,7 +232,7 @@
         var randomQuote = quotes[Math.floor(Math.random() * quotes.length)];
     
         // Set the text content of the paragraph to the random quote
-        document.querySelector('#loading_text p').innerHTML = "<p style='font-size:40px'>Loading...\n</p><i>" + randomQuote + "</i>";
+        document.querySelector('#loading_text p').innerHTML = "<i>" + randomQuote + "</i>";
     </script>
 
     <!--Register Service Worker. this will cache the wasm / js scripts for offline use (for PWA functionality). -->
