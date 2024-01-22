@@ -143,12 +143,12 @@ impl eframe::App for Website {
         egui::CentralPanel::default().show(ctx, |ui| {
             egui_extras::install_image_loaders(ctx);
             egui::ScrollArea::vertical().show(ui, |ui| {
-                //
-                // About Me
-                //
                 ui.vertical(|ui| {
                     // ui.set_max_width(ui.available_width() * 0.5);
-
+                    
+                    //
+                    // About Me
+                    //
                     let response = ui.heading(add_text(TextType::Heading, "About Me"));
                     if let Some(about_me_button) = about_me_button {
                         if about_me_button.clicked() {
@@ -168,7 +168,10 @@ impl eframe::App for Website {
 
                     ui.separator();
                     ui.add_space(10.0);
-
+                    
+                    //
+                    // Education
+                    //
                     let response = ui.heading(add_text(TextType::Heading, "Education"));
                     if let Some(education_button) = education_button {
                         if education_button.clicked() {
@@ -185,6 +188,9 @@ impl eframe::App for Website {
                     ui.add_space(10.0);
                     ui.separator();
 
+                    //
+                    // Strengths
+                    //
                     let response = ui.heading(add_text(TextType::Heading, "Strengths"));
                     if let Some(strengths_button) = strengths_button {
                         if strengths_button.clicked() {
@@ -207,6 +213,9 @@ impl eframe::App for Website {
                     ui.add_space(10.0);
                     ui.separator();
 
+                    //
+                    // Coursework
+                    //
                     let response = ui.heading(add_text(TextType::Heading, "Coursework"));
                     if let Some(coursework_button) = coursework_button {
                         if coursework_button.clicked() {
@@ -241,7 +250,7 @@ impl eframe::App for Website {
                     ui.separator();
 
                     //
-                    // Projects
+                    // Research Projects
                     //
                     let response = ui.heading(add_text(TextType::Heading, "Research Projects"));
                     if let Some(research_projects_button) = research_projects_button {
@@ -252,7 +261,10 @@ impl eframe::App for Website {
                     add_project(ui, "Chess AI comparative analysis", "Aimed to explore search algorithms to create a novel chess engine. We use python3.10 programming language and chess module as an interace for handling the board. Furthermore chessboard library was used for gui display.", Some("https://github.com/Saphereye/ChessAI"), Some(egui::include_image!("../assets/projects/chess.png")));
                     add_project(ui, "Malaria Cell classification using state-of-the-art Vision Tranformer", "The project utilized vision transformer trained on various processed images of the training data such as green channel, green channle canny filx`tered and klahe filter. The individual models where then combined using a ensemble methods. The validation set gave 99.7% accuracy and the testing accuracy was ~94%", None, Some(egui::include_image!("../assets/projects/ip.png")));
                     add_project(ui, "Pneumonia diagnosis using chest X-ray", "The project leveraged vision transformers architecture for pneumonia diagnosis. The project also included implementing methods for improving upon the research paper on which it was implemented", None, Some(egui::include_image!("../assets/projects/dl.png")));
-
+                    
+                    //
+                    // Work Experience, Competetions and Club activities
+                    //
                     let response = ui.heading(add_text(TextType::Heading, "Work Experience, Competetions and Club activities"));
                     if let Some(work_experience_button) = work_experience_button {
                         if work_experience_button.clicked() {
@@ -261,12 +273,16 @@ impl eframe::App for Website {
                     }
                     add_project(ui, "BC6 data analysis", "This was a project for my research internship at NCPOR, Goa. The project was made using Django. It supports a step by step research submission portal and features such as email verification for proposal acceptance. It also includes a page for visualizing BC6 carbon data.", Some("https://github.com/Saphereye/ncpor-portal-ps2"), Some(egui::include_image!("../assets/projects/data.png")));
                     add_project(ui, "ServiQuick: One touch emergency services app", "ServiQuik is a user-friendly mobile application designed to provide swift access to emergency services. With just a few taps, you can call for immediate assistance from hospitals, fire stations, or the police. The app employs Text-to-Speech (TTS) technology to convey essential information about the nearest service of your choice and provides a convenient route on the map for your destination.", Some("https://github.com/Saphereye/ServiQuick"), Some(egui::include_image!("../assets/projects/serviquick.png")));
-                    add_project(ui, "Article: Free Software Movement and its Importance in the Modern World", "In today’s digital world, every aspect of our lives is intertwined with computers. A “computer” will play a considerable part in official work or leisure activities. With such a significant dependence on this technology, the idea of not having control over what we use is absurd. This is, sadly, the current situation with proprietary software. This article explores this problem in detail", Some("https://csabitsh.wordpress.com/2022/10/15/free-software-movement-and-its-importance-in-the-modern-world/"), Some(egui::include_image!("../assets/projects/fsm.webp")));
-                    add_project(ui, "Article: A Brief History of Computer Graphics", "Millions of people watch movies every year, marveling at the impeccable CGI (Computer-generated imagery). According to some studies, teens use their phones for an average of about 8 hours a week, surfing social media and popular websites like YouTube. Knowingly or unknowingly, computer graphics is inherent everywhere around us. Consumers often overlook how much computer graphics is part of their lives, from bringing their favorite characters to life to providing realistic simulations. This article explores this topic in detail", Some("https://csabitsh.wordpress.com/a-brief-history-of-computer-graphics/"), Some(egui::include_image!("../assets/projects/graphics2.jpg")));
                     add_project(ui, "Dockerized E-Commerce with Spring Security and React.js", "A ready-to-scale, docker-ized web application that supported placing orders, order status, inventory management, Admin, Manager, and User functionality using and authentication using Spring Security and MySQL coupled with a React.js based frontend. Utilized a custom-made system for user payments and had coupon code functionality and email notification", Some("https://github.com/Divyateja04/Oopsie_BITS_CSF213"), Some(egui::include_image!("../assets/projects/oopsie.png")));
                     add_project(ui, "Graph Based Database Architecture in Multithreaded C", "A C based multithreaded graph database system which supported multiple concurrent requests for writing, reading and traversing the graphs in the database using DFS and BFS", Some("https://github.com/Divyateja04/ClientServer_CSF372"), None);
                     add_project(ui, "Handouts For You", "A dedicated website to facilitate the accessibility of almost 2000+ course handouts, expanded the website's functionality by incorporating features for sharing notes, resources, and questions related to the campus, and implemented a course review system, notes sharing system and CGPA cutoff system with 4000+ students handling 1000+ requests per day.", Some("https://handoutsforyou.vercel.app/"), Some(egui::include_image!("../assets/projects/handouts.png")));
+                    add_project(ui, "Secure and friendly Quiz App", "A secure and user friendly quiz app interface that detects malpractices and auto submits the user's response. It can detect tab changes and window changes as well.z", Some("https://quizapp-ten-swart.vercel.app/"), Some(egui::include_image!("../assets/projects/quizapp.png")));
+                    add_project(ui, "Article: Free Software Movement and its Importance in the Modern World", "In today’s digital world, every aspect of our lives is intertwined with computers. A “computer” will play a considerable part in official work or leisure activities. With such a significant dependence on this technology, the idea of not having control over what we use is absurd. This is, sadly, the current situation with proprietary software. This article explores this problem in detail", Some("https://csabitsh.wordpress.com/2022/10/15/free-software-movement-and-its-importance-in-the-modern-world/"), Some(egui::include_image!("../assets/projects/fsm.webp")));
+                    add_project(ui, "Article: A Brief History of Computer Graphics", "Millions of people watch movies every year, marveling at the impeccable CGI (Computer-generated imagery). According to some studies, teens use their phones for an average of about 8 hours a week, surfing social media and popular websites like YouTube. Knowingly or unknowingly, computer graphics is inherent everywhere around us. Consumers often overlook how much computer graphics is part of their lives, from bringing their favorite characters to life to providing realistic simulations. This article explores this topic in detail", Some("https://csabitsh.wordpress.com/a-brief-history-of-computer-graphics/"), Some(egui::include_image!("../assets/projects/graphics2.jpg")));
 
+                    //
+                    // Hobby projects
+                    //
                     let response = ui.heading(add_text(TextType::Heading, "Hobby Projects"));
                     if let Some(personal_projects_button) = personal_projects_button {
                         if personal_projects_button.clicked() {
@@ -283,7 +299,7 @@ impl eframe::App for Website {
                     ));
                     add_project(ui, "Multipurpose Telegram Bot", "A personal telegram bot implemeted using teloxide library in rust. Supports a wide variety of toy features such as reporting the weather and sending cat pics. Sends a greeting at 8am everyday and can also jot down todos for every user.", Some("https://github.com/Saphereye/herr-jr"), Some(egui::include_image!("../assets/projects/herrjr.png")));
                     add_project(ui, "NES Emulator", "Implemented a an NES emulator in rust. Supports screen switching and input mapping.", Some("https://github.com/Saphereye/nes_emulator"), Some(egui::include_image!("../assets/projects/nes.png")));
-                    // add_project(ui, "Lan based chatting application", "gg", Some("https://github.com/Saphereye/lan-chat"), None);  
+                    // add_project(ui, "Lan based chatting application", "", Some("https://github.com/Saphereye/lan-chat"), None);  
 
                     if window_width < 972.0 {
                         ui.heading(add_text(TextType::Heading, "Contact Me"));

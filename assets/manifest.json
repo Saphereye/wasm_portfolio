@@ -1,9 +1,9 @@
 {
-  "name": "egui Template PWA",
-  "short_name": "egui-template-pwa",
+  "name": "Adarsh Das Portfolio",
+  "short_name": "adarsh-das-portfolio",
   "icons": [
     {
-      "src": "./icon-256.png",
+      "src": "./evileye.png",
       "sizes": "256x256",
       "type": "image/png"
     },
